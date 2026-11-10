@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aice Operational System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aiceRed: '#e11d48',
+                        aiceDark: '#0f172a'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+    <!-- LOGIN SCREEN WRAPPER (Ditampilkan jika belum login) -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 border border-slate-100">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-600 text-white rounded-2xl text-2xl font-bold mb-4 shadow-lg shadow-red-600/30">
+                    A
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">Aice Operational System</h1>
+                <p class="text-sm text-slate-500 mt-1">Silakan masukkan password untuk mengakses aplikasi</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Password Akses</label>
+                    <input type="password" id="passwordInput" required placeholder="Masukkan password..." 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500 text-slate-800 placeholder-slate-400 text-sm transition">
+                </div>
+
+                <button type="submit" class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-lg shadow-red-600/30 transition duration-200 text-sm">
+                    Masuk ke Aplikasi
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <p class="text-[11px] text-slate-400 italic">Protected System • by Maulani</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER (Disembunyikan sebelum login) -->
+    <div id="app-container" class="hidden pb-24 md:pb-8">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-rose-600 to-red-700 text-white shadow-md sticky top-0 z-30 px-4 py-3">
+            <div class="max-w-3xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-white text-rose-600 flex items-center justify-center font-bold text-lg shadow-sm">A</div>
+                    <div>
+                        <h1 class="font-bold text-base leading-tight">Aice Operational System</h1>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <p class="text-[10px] text-rose-100">Audit Freezer & Order Digital</p>
+                            <span class="text-[9px] text-rose-200/90 italic font-light">• by Maulani</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Header Action Buttons -->
+                <div class="flex items-center gap-1.5">
+                    <button onclick="undoAction()" id="btn-undo" disabled class="text-xs bg-rose-800/40 text-rose-300 px-2 py-1.5 rounded-lg flex items-center gap-1 transition opacity-50 cursor-not-allowed">
+                        <i data-lucide="undo-2" class="w-3.5 h-3.5"></i> Undo
+                    </button>
+
+                    <!-- Menu Data Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleDataMenu()" class="text-xs bg-rose-800 hover:bg-rose-900 text-rose-100 px-2 py-1.5 rounded-lg flex items-center gap-1 transition">
+                            <i data-lucide="database" class="w-3.5 h-3.5"></i> Data <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                        </button>
+                        <div id="data-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-slate-200 py-1 text-slate-700 text-xs z-50">
+                            <button onclick="backupData()" class="w-full text-left px-3 py-2 hover:bg-slate-100 flex items-center gap-2"><i data-lucide="download" class="w-3.5 h-3.5 text-blue-600"></i> Backup (.json)</button>
+                            <button onclick="document.getElementById('restore-file').click()" class="w-full text-left px-3 py-2 hover:bg-slate-100 flex items-center gap-2"><i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-600"></i> Pulihkan Data</button>
+                            <button onclick="clearAppCache()" class="w-full text-left px-3 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2 border-t"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus Cache</button>
+                        </div>
+                    </div>
+                    <input type="file" id="restore-file" accept=".json" class="hidden" onchange="restoreData(event)">
+
+                    <button onclick="resetAllForms()" class="text-xs bg-rose-800 hover:bg-rose-900 text-rose-100 px-2 py-1.5 rounded-lg flex items-center gap-1 transition" title="Reset Form">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <button onclick="logoutApp()" class="text-xs bg-rose-900 hover:bg-rose-950 text-rose-100 px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition font-bold" title="Keluar">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Keluar
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-3xl mx-auto p-4 space-y-4">
+            <!-- Form Informasi -->
+            <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-2">
+                    <i data-lucide="store" class="w-4 h-4 text-rose-600"></i> Informasi Audit & Toko
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Hari Kunjungan *</label>
+                        <div class="flex gap-1">
+                            <input type="text" id="audit-day" placeholder="Contoh: SENIN / KAMIS" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
+                            <button onclick="resetField('audit-day')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Kode Area *</label>
+                        <div class="flex gap-1">
+                            <input type="text" id="area-code" placeholder="Contoh: KUDUS-01" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
+                            <button onclick="resetField('area-code')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Nama Sales *</label>
+                        <div class="flex gap-1">
+                            <input type="text" id="staff-name" placeholder="Nama Anda" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
+                            <button onclick="resetField('staff-name')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Kode Toko</label>
+                        <input type="text" id="store-code" placeholder="ID Toko" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Nama Toko *</label>
+                        <input type="text" id="store-name" placeholder="Nama Toko" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Kunjungan Ke & Waktu</label>
+                        <div class="flex gap-1">
+                            <div class="flex items-center gap-1 bg-slate-100 border border-slate-300 rounded-lg px-2 w-24">
+                                <span class="text-[10px] text-slate-500">Ke-</span>
+                                <input type="number" id="visit-number" value="1" min="1" onchange="updateReportText(); saveToLocalStorage();" class="w-full bg-transparent font-bold text-rose-600 outline-none">
+                            </div>
+                            <button onclick="resetVisit()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                            <input type="text" id="audit-date" readonly class="w-full border border-slate-200 bg-slate-50 text-[10px] text-slate-500 rounded-lg p-2">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">ID Freezer</label>
+                        <input type="text" id="freezer-id" placeholder="Barcode / ID Freezer" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kelompok Master -->
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Master</h2>
+            <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
+                <button onclick="switchTab('pelanggan')" id="btn-tab-pelanggan" class="flex-1 py-2.5 px-2 rounded-lg transition bg-blue-600 text-white flex items-center justify-center gap-1 whitespace-nowrap shadow">
+                    <i data-lucide="users" class="w-3.5 h-3.5"></i> Data Pelanggan
+                </button>
+                <button onclick="switchTab('stock')" id="btn-tab-stock" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
+                    <i data-lucide="boxes" class="w-3.5 h-3.5"></i> Master Stok
+                </button>
+            </div>
+
+            <!-- Kelompok Pesanan -->
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Pesanan</h2>
+            <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
+                <button onclick="switchTab('audit')" id="btn-tab-audit" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Audit
+                </button>
+                <button onclick="switchTab('order')" id="btn-tab-order" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
+                    <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Order
+                </button>
+                <button onclick="switchTab('wa')" id="btn-tab-wa" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim WA
+                </button>
+            </div>
+
+            <!-- TAB 0: MASTER PELANGGAN -->
+            <section id="tab-pelanggan" class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-bold text-xs flex items-center gap-1"><i data-lucide="users" class="w-4 h-4 text-blue-600"></i> Master Data Pelanggan</h3>
+                        <div class="flex gap-1">
+                            <button onclick="openAddDayModal()" class="bg-emerald-600 text-white text-[10px] px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1"><i data-lucide="calendar-plus" class="w-3 h-3"></i> Tambah Hari</button>
+                            <button onclick="openAddCustomerModal()" class="bg-blue-600 text-white text-[10px] px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1"><i data-lucide="user-plus" class="w-3 h-3"></i> Tambah Toko</button>
+                        </div>
+                    </div>
+                    
+                    <div id="day-buttons-container" class="flex gap-1 overflow-x-auto pb-1 text-[11px]"></div>
+                    <input type="text" id="search-customer" onkeyup="renderCustomers()" placeholder="Cari Kode Toko atau Nama Toko..." class="w-full text-xs border rounded-lg p-2 bg-slate-50 outline-none">
+                    <div id="customer-list" class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar pr-1"></div>
+                </div>
+                <button onclick="switchTab('stock')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Master Stok >></button>
+            </section>
+
+            <!-- TAB 1: MASTER STOK -->
+            <section id="tab-stock" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
+                    <div class="flex justify-between items-center border-b pb-2 mb-3">
+                        <h3 class="font-bold text-xs flex items-center gap-1"><i data-lucide="boxes" class="w-4 h-4 text-blue-600"></i> Master Stok & Harga Varian</h3>
+                        <div class="flex gap-1">
+                            <button onclick="openAddVariantModal()" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded font-bold">+ Varian Baru</button>
+                            <button onclick="resetMasterStock()" class="text-[10px] bg-rose-100 text-rose-700 px-2 py-1 rounded font-bold">Reset 0</button>
+                        </div>
+                    </div>
+                    <input type="text" id="search-stock" onkeyup="renderMasterStock()" placeholder="Cari produk..." class="w-full text-xs border rounded-lg p-2 mb-3 bg-slate-50 outline-none">
+                    <div id="master-stock-list" class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar pr-1"></div>
+                </div>
+                <button onclick="switchTab('audit')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Audit >></button>
+            </section>
+
+            <!-- TAB 2: AUDIT FOTO -->
+            <section id="tab-audit" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
+                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 5 Foto Audit</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div id="photo-slots-container" class="contents"></div>
+                    </div>
+                </div>
+                <button onclick="switchTab('order')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Order >></button>
+            </section>
+
+            <!-- TAB 3: ORDER -->
+            <section id="tab-order" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
+                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="shopping-cart" class="w-4 h-4 text-rose-600"></i> Pemesanan (Hanya Stok > 0)</h3>
+                    <input type="text" id="search-order" onkeyup="renderOrderList()" placeholder="Cari varian..." class="w-full text-xs border rounded-lg p-2 mb-3 bg-slate-50 outline-none">
+                    <div id="order-list" class="space-y-1 max-h-80 overflow-y-auto custom-scrollbar pr-1"></div>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl space-y-2">
+                    <div class="text-[11px] font-bold text-rose-900 border-b border-rose-200 pb-1">Rincian Pilihan Order:</div>
+                    <div id="order-summary-items" class="text-[10px] text-slate-700 space-y-1 max-h-32 overflow-y-auto custom-scrollbar">
+                        <span class="text-slate-400 italic">Belum ada item dipilih</span>
+                    </div>
+                    <div class="border-t border-rose-200 pt-2 flex justify-between font-bold text-xs text-rose-900">
+                        <span>Total Dus: <span id="total-dus">0</span></span>
+                        <span>Total: <span id="total-harga">Rp 0</span></span>
+                    </div>
+                </div>
+                <button onclick="switchTab('wa')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Kirim WA >></button>
+            </section>
+
+            <!-- TAB 4: WA & GAMBAR -->
+            <section id="tab-wa" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format WA</h3>
+                    <textarea id="wa-text" rows="10" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
+                    
+                    <h3 class="font-bold text-xs flex justify-between items-center border-b pb-2 mt-4">
+                        <span class="flex items-center gap-1"><i data-lucide="image" class="w-4 h-4 text-blue-600"></i> Komposit Foto</span>
+                        <button onclick="generateImage()" class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded">Buat Gambar</button>
+                    </h3>
+                    <div id="canvas-output" class="min-h-[100px] border border-dashed flex items-center justify-center bg-slate-50 text-xs text-slate-400 p-2 rounded">Klik Buat Gambar</div>
+                    
+                    <button onclick="sendWA()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl mt-4 flex justify-center items-center gap-2 shadow">
+                        <i data-lucide="send" class="w-4 h-4"></i> Kirim ke WhatsApp
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: Tambah Hari Baru -->
+    <div id="modal-add-day" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-xl">
+            <h3 class="font-bold text-sm text-slate-800">Tambah Hari / Rute Baru</h3>
+            <input type="text" id="new-day-name" placeholder="Contoh: RABU / MINGGU" class="w-full text-xs border rounded-lg p-2.5 outline-none uppercase">
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeAddDayModal()" class="flex-1 bg-slate-200 text-slate-700 text-xs font-bold py-2 rounded-xl">Batal</button>
+                <button onclick="saveNewDay()" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Tambah Toko Baru -->
+    <div id="modal-add-customer" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-5 max-w-md w-full space-y-3 shadow-xl max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-sm text-slate-800">Tambah Toko / Pelanggan Baru</h3>
+            <div class="space-y-2 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Kategori Hari</label>
+                    <select id="new-cust-area" class="w-full border rounded-lg p-2 bg-slate-50"></select>
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Kode Toko *</label>
+                    <input type="text" id="new-cust-code" placeholder="Contoh: D9999" class="w-full border rounded-lg p-2 uppercase">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Nama Toko *</label>
+                    <input type="text" id="new-cust-name" placeholder="Nama Toko" class="w-full border rounded-lg p-2 uppercase">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">ID Freezer</label>
+                    <input type="text" id="new-cust-freezer" placeholder="Nomor Barcode Freezer" class="w-full border rounded-lg p-2 uppercase">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Desa / Wilayah</label>
+                    <input type="text" id="new-cust-village" placeholder="Nama Desa" class="w-full border rounded-lg p-2 uppercase">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Nomor HP</label>
+                    <input type="text" id="new-cust-phone" placeholder="08xxxxxxxxxx" class="w-full border rounded-lg p-2">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeAddCustomerModal()" class="flex-1 bg-slate-200 text-slate-700 text-xs font-bold py-2 rounded-xl">Batal</button>
+                <button onclick="saveNewCustomer()" class="flex-1 bg-blue-600 text-white text-xs font-bold py-2 rounded-xl">Simpan Toko</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Tambah Varian Baru -->
+    <div id="modal-add-variant" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-xl">
+            <h3 class="font-bold text-sm text-slate-800">Tambah Varian Es Krim Baru</h3>
+            <div class="space-y-2 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Kode SKU *</label>
+                    <input type="text" id="new-var-sku" placeholder="Contoh: 560" class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Nama Varian *</label>
+                    <input type="text" id="new-var-name" placeholder="Nama Es Krim" class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Harga Satuan (Rp) *</label>
+                    <input type="number" id="new-var-price" placeholder="95000" class="w-full border rounded-lg p-2">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Stok Awal (Karton)</label>
+                    <input type="number" id="new-var-stock" value="0" class="w-full border rounded-lg p-2">
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeAddVariantModal()" class="flex-1 bg-slate-200 text-slate-700 text-xs font-bold py-2 rounded-xl">Batal</button>
+                <button onclick="askConfirmAddVariant()" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Konfirmasi Aksi (Ya/Tidak) -->
+    <div id="modal-confirm" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-2xl text-center">
+            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-1">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h3 id="confirm-title" class="font-bold text-sm text-slate-800">Konfirmasi</h3>
+            <p id="confirm-message" class="text-xs text-slate-500 leading-relaxed"></p>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeConfirmModal(false)" class="flex-1 bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl">Batal</button>
+                <button id="confirm-yes-btn" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-2.5 rounded-xl shadow">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="collage-canvas" class="hidden"></canvas>
+    <div id="toast" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // PASSWORD UTAMA (Dapat diganti jika ada karyawan keluar)
+        const PASSWORD_RAHASIA = "aice2026";
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const val = document.getElementById('passwordInput').value;
+            if(val === PASSWORD_RAHASIA) {
+                sessionStorage.setItem('aice_auth', 'authenticated');
+                checkAuth();
+            } else {
+                showToast('Password salah! Silakan hubungi admin.', 'error');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+
+        function logoutApp() {
+            sessionStorage.removeItem('aice_auth');
+            checkAuth();
+        }
+
+        function checkAuth() {
+            if(sessionStorage.getItem('aice_auth') === 'authenticated') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+        }
+
+        let products = [
+            {sku: '116', name: 'Milk Melon', price: 95000}, {sku: '453', name: 'Nanas', price: 77500},
+            {sku: '454', name: 'Semangka', price: 77500}, {sku: '119', name: 'Mango Slush', price: 90500},
+            {sku: '411', name: 'Mochi Vanilla', price: 92500}, {sku: '413', name: 'Mochi Durian', price: 92500},
+            {sku: '414', name: 'Mochi Coklat', price: 93500}, {sku: '475', name: 'Mochi Klepon', price: 94500},
+            {sku: '535', name: 'Mochi Mango', price: 94500}, {sku: '515', name: 'Mochi Peach', price: 92500},
+            {sku: '514', name: 'Mochi Banana', price: 92500}, {sku: '455', name: 'Miki-miki', price: 96000},
+            {sku: '508', name: 'Miki Double Choco', price: 96000}, {sku: '457', name: 'Sweet Corn', price: 96000},
+            {sku: '130', name: 'Taro Crispy', price: 126400}, {sku: '521', name: 'Fruitty Rolls', price: 124800},
+            {sku: '452', name: 'Bingo', price: 97000}, {sku: '553', name: 'Goyang Lidah Mango', price: 115600},
+            {sku: '552', name: 'Vanilla Berry Cone', price: 115200}, {sku: '469', name: 'Sundae Coklat', price: 97000},
+            {sku: '470', name: 'Sundae Stroberry', price: 97000}, {sku: '512', name: 'Strawberry Cone', price: 97500},
+            {sku: '448', name: 'Chocomelt Cone', price: 97500}, {sku: '456', name: 'Coffee Crispy', price: 125400},
+            {sku: '129', name: 'Strawberry Crispy', price: 125400}, {sku: '111', name: 'Jeruk', price: 78000},
+            {sku: '120', name: 'Choco Crispy (30)', price: 117000}, {sku: '494', name: 'Fruizzy Blueberry Yoghurt', price: 96000},
+            {sku: '126', name: '2 Colors', price: 92000}, {sku: '500', name: 'Fruizzy Grape Fruits', price: 80000},
+            {sku: '497', name: 'Choco Malt Stick', price: 80000}, {sku: '520', name: 'Crispy Balls', price: 118500},
+            {sku: '545', name: 'Cookie & Cream', price: 118500}, {sku: '555', name: 'CB Shine Muscat', price: 118500},
+            {sku: '556', name: 'Ria-Ria Bingo', price: 115400}
+        ];
+
+        let customers = [
+            // KAMIS
+            { area: 'KAMIS', code: 'D0661', freezer: 'IDNR2019415026', name: 'SUKARNO', village: 'BRAMBANG', phone: '085155010931' },
+            { area: 'KAMIS', code: 'D0672', freezer: 'IDNR2019317195', name: 'PUJI', village: 'PUNDENARUM', phone: '085742837437' },
+            { area: 'KAMIS', code: 'D0815', freezer: 'IDNR2016301599', name: 'MASKURI', village: 'SIDOREJO', phone: '085743316557' },
+            { area: 'KAMIS', code: 'D0819', freezer: 'IDNR2024304433', name: 'RYAN JAYA', village: 'PUNDENARUM', phone: '085726003676' },
+            { area: 'KAMIS', code: 'D0824', freezer: 'IDNR2016301547', name: 'MAULANA', village: 'SIDOREJO', phone: '085726024374' },
+            { area: 'KAMIS', code: 'D0823', freezer: 'IDNR2019314692', name: 'D&A', village: 'SIDOREJO', phone: '085876089261' },
+            { area: 'KAMIS', code: 'D0821', freezer: 'IDNR2016315742', name: 'MB MUD', village: 'SIDOREJO', phone: '089525635356' },
+            { area: 'KAMIS', code: 'D0835', freezer: 'IDNR2016305087', name: 'AKBAR CABEAN', village: 'SIDOREJO', phone: '089668392365' },
+            { area: 'KAMIS', code: 'D0932', freezer: 'IDNR2020302740', name: 'ATK ARUM', village: 'SIDOREJO', phone: '081345786541' },
+            { area: 'KAMIS', code: 'D0922', freezer: 'IDNR2020302729', name: 'MAHMUDI', village: 'PUNDENARUM', phone: '085640568107' },
+            { area: 'KAMIS', code: 'D0916', freezer: 'IDNR2020302540', name: 'USWATUN', village: 'REJOSARI', phone: '085741909269' },
+            { area: 'KAMIS', code: 'D10248', freezer: 'IDNR2021306124', name: 'ARIFAH', village: 'PUNDENARUM', phone: '089534281466' },
+            { area: 'KAMIS', code: 'D10535', freezer: 'IDNR2023303286', name: 'TOKO CITRA', village: 'SIDOREJO', phone: '085876307331' },
+            { area: 'KAMIS', code: 'D10755', freezer: 'IDNR20252012621', name: 'SULASIH', village: 'PUNDENARUM', phone: '0895360985379' },
+            { area: 'KAMIS', code: 'D10901', freezer: 'IDNR2024305818', name: 'SDN TEGOWANU 1', village: 'SIDOREJO', phone: '085640575117' },
+            { area: 'KAMIS', code: 'D11176', freezer: 'IDNR2024203121', name: 'A FAMILY MART', village: 'PUNDENARUM', phone: '085733420887' },
+            { area: 'KAMIS', code: 'D11212', freezer: 'IDN2016315735', name: 'BAKOL JAJAN S&S', village: 'REJOSARI', phone: '081225629879' },
+            { area: 'KAMIS', code: 'D11225', freezer: 'IDNR2020416353', name: 'TOKO PLASTIK BEJO', village: 'BRAMBANG', phone: '087778516739' },
+            { area: 'KAMIS', code: 'D11230', freezer: 'IDNA2018307351', name: 'TOKO RINDI', village: 'REJOSARI', phone: '08973436973' },
+            { area: 'KAMIS', code: 'D11256', freezer: 'IDNR20252013227', name: 'SULASIH 2', village: 'PUNDENARUM', phone: '0895360985379' },
+            { area: 'KAMIS', code: 'D11283', freezer: 'IDNR2016306821', name: 'SALMA STORE', village: 'BRAMBANG', phone: '085327647999' },
+            
+            // SENIN
+            { area: 'SENIN', code: 'D0712', freezer: 'IDNR2020407811', name: 'HALIMAH', village: 'BANYUMENENG', phone: '085100089837' },
+            { area: 'SENIN', code: 'D0755', freezer: 'IDNR2022402163', name: 'MAHARANI 7', village: 'BANYUMENENG', phone: '082137914828' },
+            { area: 'SENIN', code: 'D0754', freezer: 'IDNR2020406926', name: 'SEPTI', village: 'BANYUMENENG', phone: '081325890273' },
+            { area: 'SENIN', code: 'D0753', freezer: 'IDNR2020302326', name: 'SUNARTI KR KUMPUL', village: 'BANYUMENENG', phone: '085802908551' },
+            { area: 'SENIN', code: 'D0771', freezer: 'IDNR2020300398', name: 'WIWID', village: 'BANYUMENENG', phone: '085728127701' },
+            { area: 'SENIN', code: 'D0770', freezer: 'IDNR2016315539', name: 'ISTIANAH', village: 'KEBONBATUR', phone: '08812734636' },
+            { area: 'SENIN', code: 'D0769', freezer: 'IDNR2022305136', name: 'RUKAYAH', village: 'KEBONBATUR', phone: '082138315759' },
+            { area: 'SENIN', code: 'D0867', freezer: 'IDNR2020302812', name: 'AZAM', village: 'KEBONBATUR', phone: '088221332327' },
+            { area: 'SENIN', code: 'D0887', freezer: 'IDNR2020302620', name: 'RIO/RIYYUN LAUNDRY', village: 'BANYUMENENG', phone: '082135660435' },
+            { area: 'SENIN', code: 'D10155', freezer: 'IDNR2021203157', name: 'MEGA CAHAYA', village: 'BANYUMENENG', phone: '085325345200' },
+            { area: 'SENIN', code: 'D10191', freezer: 'IDNR2021202123', name: 'MUSTAFID', village: 'KEBONBATUR', phone: '085842906252' },
+            { area: 'SENIN', code: 'D10280', freezer: 'BIDNAICE2021301455', name: 'ERNI SUSANTI', village: 'BANYUMENENG', phone: '0895415510686' },
+            { area: 'SENIN', code: 'D10439', freezer: 'IDNR2022305121', name: 'KASMURI', village: 'BANYUMENENG', phone: '0882006282983' },
+            { area: 'SENIN', code: 'D10543', freezer: 'IDNR2020302728', name: 'TOKO MBA NIP', village: 'KEBONBATUR', phone: '085865388835' },
+            { area: 'SENIN', code: 'D10623', freezer: 'IDNR2020302817', name: 'TOKO RENO JAYA', village: 'KEBONBATUR', phone: '089531410161' },
+            { area: 'SENIN', code: 'D10707', freezer: 'IDNR2016301857', name: 'SMP KI AGENG GIRI', village: 'BANYUMENENG', phone: '088215493026' },
+            { area: 'SENIN', code: 'D10944', freezer: 'IDNR2020302483', name: 'MEGA CAHAYA 2', village: 'BANYUMENENG', phone: '082136248952' },
+            { area: 'SENIN', code: 'D11099', freezer: 'IDNR20252002653', name: 'MBAK UMI', village: 'KEBONBATUR', phone: '082224324755' },
+            { area: 'SENIN', code: 'D11142', freezer: 'IDN2016310541', name: 'TOKO LESTARI', village: 'KEBONBATUR', phone: '085867939557' },
+            { area: 'SENIN', code: 'D11246', freezer: 'IDNR2023301330', name: 'TOKO DYAN', village: 'KEBONBATUR', phone: '0895332236509' },
+            { area: 'SENIN', code: 'D11328', freezer: 'IDNR2021203280', name: 'TOKO BU ETI', village: 'KEBONBATUR', phone: '087880093366' },
+
+            // SABTU
+            { area: 'SABTU', code: 'D0005', freezer: 'IDNR2019415027', name: 'KASMINTO', village: 'KEDUNGUTER', phone: '082137601423' },
+            { area: 'SABTU', code: 'D0011', freezer: 'IDNR2019403111', name: 'LESTARI', village: 'DUKUN', phone: '085225351305' },
+            { area: 'SABTU', code: 'D0013', freezer: 'IDNR2016305456', name: 'TOKO ANISA JUICE', village: 'PIDODO', phone: '082323972303' },
+            { area: 'SABTU', code: 'D0020', freezer: 'IDNR2016315693', name: 'RIZKI', village: 'KLITIH', phone: '085325203282' },
+            { area: 'SABTU', code: 'D0125', freezer: 'IDNR2016315379', name: 'AGUNG SAMPANG', village: 'SAMPANG', phone: '081227075636' },
+            { area: 'SABTU', code: 'D0017', freezer: 'IDNR2016315972', name: 'TOKO ALI IMRON', village: 'DUKUN', phone: '081215934695' },
+            { area: 'SABTU', code: 'D0122', freezer: 'IDNR2016305871', name: 'ARIS CELL 2', village: 'KLITIH', phone: '088980291220' },
+            { area: 'SABTU', code: 'D0347', freezer: 'IDNR2016310533', name: 'YANTI', village: 'KLITIH', phone: '085701088457' },
+            { area: 'SABTU', code: 'D0621', freezer: 'IDNR2020303667', name: 'TOKO LIMA JAYA', village: 'KEDUNGUTER', phone: '081357993246' },
+            { area: 'SABTU', code: 'D10121', freezer: 'IDNR2021202372', name: 'MBAK IMA', village: 'PIDODO', phone: '085845303834' },
+            { area: 'SABTU', code: 'D10162', freezer: 'IDNR2023302669', name: 'JOKO SUSILO', village: 'KLITIH', phone: '083122642521' },
+            { area: 'SABTU', code: 'D10246', freezer: 'IDNR2020306986', name: 'ABDUL KHALIM', village: 'KLITIH', phone: '081215990798' },
+            { area: 'SABTU', code: 'D10286', freezer: 'IDNR2021305497', name: 'BERKAH', village: 'KLITIH', phone: '081325620503' },
+            { area: 'SABTU', code: 'D10294', freezer: 'IDNR2021202339', name: 'TOKO MASKAN', village: 'SAMPANG', phone: '085225801217' },
+            { area: 'SABTU', code: 'D10568', freezer: 'IDNR2023310299', name: 'TOKO MINDARSIH', village: 'PIDODO', phone: '088216060639' },
+            { area: 'SABTU', code: 'D10610', freezer: 'BIDNAICE2021301754', name: 'TOKO TIN', village: 'SAMPANG', phone: '082220467197' },
+            { area: 'SABTU', code: 'D10802', freezer: 'IDNR2020417470', name: 'SD KEDUNGUTER', village: 'KEDUNGUTER', phone: '085291207355' },
+            { area: 'SABTU', code: 'D10832', freezer: 'IDNR2022305197', name: 'MTS & MA AL IKHWAN', village: 'KLITIH', phone: '082135573606' },
+            { area: 'SABTU', code: 'D10883', freezer: 'IDNR2021202320', name: 'TOKO BU SITI AMINAH', village: 'DUKUN', phone: '083817977980' },
+            { area: 'SABTU', code: 'D10938', freezer: 'IDNR2024307758', name: 'MI RAUDLATUSSYBAN', village: 'SAMPANG', phone: '081325393400' },
+            { area: 'SABTU', code: 'D11210', freezer: 'IDNR2016303646', name: 'SD 1 DUKUN', village: 'DUKUN', phone: '082323919429' },
+
+            // JUMAT
+            { area: 'JUMAT', code: 'D0687', freezer: 'IDNR2019314998', name: 'KANTONG CELL', village: 'WARU', phone: '088226914885' },
+            { area: 'JUMAT', code: 'D0713', freezer: 'IDNR2020406932', name: 'LANGGENG MAKMUR', village: 'KEMBANGARUM', phone: '081347654876' },
+            { area: 'JUMAT', code: 'D0717', freezer: 'IDNR2020407766', name: 'SUKOWATI', village: 'TEGALARUM', phone: '085270267499' },
+            { area: 'JUMAT', code: 'D0746', freezer: 'IDNR2020406165', name: 'GEMILANG', village: 'WARU', phone: '089667707012' },
+            { area: 'JUMAT', code: 'D0767', freezer: 'IDNR2020300492', name: 'KANTIN MIFTAHUL ULUM', village: 'MENUR', phone: '087789027053' },
+            { area: 'JUMAT', code: 'D0765', freezer: 'IDNR2020300855', name: 'ARIF', village: 'MENUR', phone: '081225799647' },
+            { area: 'JUMAT', code: 'D0892', freezer: 'IDNR2021201189', name: 'HABIB', village: 'KEMBANGARUM', phone: '081215552640' },
+            { area: 'JUMAT', code: 'D10255', freezer: 'IDNR2021305994', name: 'TOKO 3 PUTRI', village: 'WARU', phone: '0895424702525' },
+            { area: 'JUMAT', code: 'D10279', freezer: 'IDNR2016032039', name: 'FATKHUL JANAH', village: 'WARU', phone: '089670023015' },
+            { area: 'JUMAT', code: 'D10390', freezer: 'IDNR2022305082', name: 'BILAL JAYA', village: 'MENUR', phone: '089672664398' },
+            { area: 'JUMAT', code: 'D10552', freezer: 'IDNR2023302636', name: 'ELFAMART', village: 'BRUMBUNG', phone: '0818220750' },
+            { area: 'JUMAT', code: 'D10723', freezer: 'IDNR2020302705', name: 'APOTEK FARMOZA', village: 'NGEMPLAK', phone: '085172300780' },
+            { area: 'JUMAT', code: 'D10792', freezer: 'IDNR2023237573', name: 'TRI HANDAYANI', village: 'WARU', phone: '085742141895' },
+            { area: 'JUMAT', code: 'D10851', freezer: 'IDNR2024204788', name: 'SMA 1 MRANGGEN', village: 'BRUMBUNG', phone: '081326232024' },
+            { area: 'JUMAT', code: 'D10861', freezer: 'IDNR2024204885', name: 'MI IBROHIMIYAH', village: 'BRUMBUNG', phone: '085867898147' },
+            { area: 'JUMAT', code: 'D10921', freezer: 'IDNR2016315552', name: 'TOKO RIKA WULANDARI', village: 'TAMANSARI', phone: '082220703848' },
+            { area: 'JUMAT', code: 'D10973', freezer: 'IDNR2016315547', name: 'TOKO PAK RONI', village: 'WARU', phone: '087742160989' },
+            { area: 'JUMAT', code: 'D11082', freezer: 'IDNR2024214130', name: 'TOKO PAK AHMAD', village: 'WARU', phone: '085974797585' },
+            { area: 'JUMAT', code: 'D11165', freezer: 'IDNR2016301638', name: 'TOKO DEWA', village: 'KEMBANGARUM', phone: '089668553330' },
+            { area: 'JUMAT', code: 'D11207', freezer: 'IDNR2024203635', name: 'APOTEK NGEMPLAK', village: 'NGEMPLAK', phone: '085641661665' },
+            { area: 'JUMAT', code: 'D11270', freezer: 'IDNR2016310537', name: 'TOKO ZAINUDDIN', village: 'KEMBANGARUM', phone: '089512108620' },
+            { area: 'JUMAT', code: 'D11279', freezer: 'IDNR2021207692', name: 'PONDOK PESANTREN PUTRI ROHMANIYYAH', village: 'NGEMPLAK', phone: '08973692721' },
+            { area: 'JUMAT', code: 'D11311', freezer: 'IDNR2020205022', name: 'SD NEGERI MENUR', village: 'NGEMPLAK', phone: '085602844118' }
+        ];
+
+        let availableDays = ['SEMUA', 'SENIN', 'KAMIS', 'JUMAT', 'SABTU'];
+        let masterStock = {};
+        let orderQty = {};
+        let photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+        let currentDayFilter = 'SEMUA';
+        let stateHistory = [];
+        const photoTitles = ['1. ID Freezer / QR', '2. Selfie Karyawan', '3. Sebelum Dibersihkan', '4. Setelah Dibersihkan', '5. Tata Letak Es Krim'];
+        let confirmCallback = null;
+
+        window.onload = () => {
+            checkAuth();
+            lucide.createIcons();
+            loadFromLocalStorage();
+            if(Object.keys(masterStock).length === 0) {
+                products.forEach(p => masterStock[p.sku] = 0);
+            }
+            updateDate();
+            renderPhotoSlots();
+            renderDayButtons();
+            renderMasterStock();
+            renderCustomers();
+            updateReportText();
+            setInterval(updateDate, 60000);
+            
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('data-dropdown');
+                if(menu && !e.target.closest('button[onclick="toggleDataMenu()"]') && !menu.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        };
+
+        function updateDate() {
+            const now = new Date();
+            const opts = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const el = document.getElementById('audit-date');
+            if(el) el.value = now.toLocaleDateString('id-ID', opts) + ' WIB';
+        }
+
+        function saveState() {
+            const currentState = {
+                products: JSON.parse(JSON.stringify(products)),
+                masterStock: JSON.parse(JSON.stringify(masterStock)),
+                orderQty: JSON.parse(JSON.stringify(orderQty)),
+                photos: JSON.parse(JSON.stringify(photos)),
+                customers: JSON.parse(JSON.stringify(customers)),
+                availableDays: [...availableDays],
+                currentDayFilter: currentDayFilter,
+                form: {
+                    auditDay: document.getElementById('audit-day')?.value || '',
+                    areaCode: document.getElementById('area-code')?.value || '',
+                    staffName: document.getElementById('staff-name')?.value || '',
+                    storeCode: document.getElementById('store-code')?.value || '',
+                    storeName: document.getElementById('store-name')?.value || '',
+                    freezerId: document.getElementById('freezer-id')?.value || '',
+                    visitNumber: document.getElementById('visit-number')?.value || '1'
+                }
+            };
+            stateHistory.push(currentState);
+            if (stateHistory.length > 5) stateHistory.shift();
+            updateUndoButton();
+        }
+
+        function saveToLocalStorage() {
+            const state = {
+                products, masterStock, orderQty, photos, customers, availableDays, currentDayFilter,
+                form: {
+                    auditDay: document.getElementById('audit-day').value,
+                    areaCode: document.getElementById('area-code').value,
+                    staffName: document.getElementById('staff-name').value,
+                    storeCode: document.getElementById('store-code').value,
+                    storeName: document.getElementById('store-name').value,
+                    freezerId: document.getElementById('freezer-id').value,
+                    visitNumber: document.getElementById('visit-number').value
+                }
+            };
+            localStorage.setItem('aice_app_state_v4', JSON.stringify(state));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('aice_app_state_v4');
+            if(saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if(data.products) products = data.products;
+                    if(data.masterStock) masterStock = data.masterStock;
+                    if(data.orderQty) orderQty = data.orderQty;
+                    if(data.photos) photos = data.photos;
+                    if(data.customers) customers = data.customers;
+                    if(data.availableDays) availableDays = data.availableDays;
+                    if(data.currentDayFilter) currentDayFilter = data.currentDayFilter;
+                    if(data.form) {
+                        document.getElementById('audit-day').value = data.form.auditDay || '';
+                        document.getElementById('area-code').value = data.form.areaCode || '';
+                        document.getElementById('staff-name').value = data.form.staffName || '';
+                        document.getElementById('store-code').value = data.form.storeCode || '';
+                        document.getElementById('store-name').value = data.form.storeName || '';
+                        document.getElementById('freezer-id').value = data.form.freezerId || '';
+                        document.getElementById('visit-number').value = data.form.visitNumber || '1';
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function updateUndoButton() {
+            const btn = document.getElementById('btn-undo');
+            if(!btn) return;
+            if(stateHistory.length > 0) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-rose-800/40', 'text-rose-300');
+                btn.classList.add('bg-rose-800', 'text-rose-100');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-rose-800/40', 'text-rose-300');
+                btn.classList.remove('bg-rose-800', 'text-rose-100');
+            }
+        }
+
+        function undoAction() {
+            if(stateHistory.length === 0) return;
+            const prev = stateHistory.pop();
+            products = prev.products;
+            masterStock = prev.masterStock;
+            orderQty = prev.orderQty;
+            photos = prev.photos;
+            customers = prev.customers;
+            availableDays = prev.availableDays;
+            currentDayFilter = prev.currentDayFilter;
+            
+            document.getElementById('audit-day').value = prev.form.auditDay;
+            document.getElementById('area-code').value = prev.form.areaCode;
+            document.getElementById('staff-name').value = prev.form.staffName;
+            document.getElementById('store-code').value = prev.form.storeCode;
+            document.getElementById('store-name').value = prev.form.storeName;
+            document.getElementById('freezer-id').value = prev.form.freezerId;
+            document.getElementById('visit-number').value = prev.form.visitNumber;
+
+            renderDayButtons();
+            renderCustomers();
+            renderMasterStock();
+            renderPhotoSlots();
+            renderOrderList();
+            updateReportText();
+            updateUndoButton();
+            saveToLocalStorage();
+            showToast('Aksi dibatalkan (Undo)');
+        }
+
+        function openConfirmModal(title, message, onYes) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-message').innerText = message;
+            confirmCallback = onYes;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+        }
+        function closeConfirmModal(res) {
+            document.getElementById('modal-confirm').classList.add('hidden');
+            if(res && confirmCallback) confirmCallback();
+            confirmCallback = null;
+        }
+        document.getElementById('confirm-yes-btn').onclick = () => closeConfirmModal(true);
+
+        function toggleDataMenu() {
+            const m = document.getElementById('data-dropdown');
+            m.classList.toggle('hidden');
+        }
+
+        function backupData() {
+            const data = localStorage.getItem('aice_app_state_v4') || '{}';
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Aice_Backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Backup data berhasil diunduh!');
+            document.getElementById('data-dropdown').classList.add('hidden');
+        }
+
+        function restoreData(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                try {
+                    JSON.parse(evt.target.result);
+                    localStorage.setItem('aice_app_state_v4', evt.target.result);
+                    loadFromLocalStorage();
+                    renderDayButtons();
+                    renderCustomers();
+                    renderMasterStock();
+                    renderPhotoSlots();
+                    renderOrderList();
+                    updateReportText();
+                    showToast('Data berhasil dipulihkan!');
+                } catch(err) {
+                    showToast('File backup tidak valid!', 'error');
+                }
+            };
+            reader.readAsText(file);
+            document.getElementById('data-dropdown').classList.add('hidden');
+        }
+
+        function clearAppCache() {
+            document.getElementById('data-dropdown').classList.add('hidden');
+            openConfirmModal('Hapus Cache Aplikasi', 'Apakah Anda yakin ingin menghapus seluruh cache dan data tersimpan di perangkat ini?', () => {
+                localStorage.removeItem('aice_app_state_v4');
+                stateHistory = [];
+                location.reload();
+            });
+        }
+
+        function switchTab(tab) {
+            ['pelanggan', 'stock', 'audit', 'order', 'wa'].forEach(t => {
+                const elTab = document.getElementById('tab-' + t);
+                const elBtn = document.getElementById('btn-tab-' + t);
+                if(elTab) elTab.classList.add('hidden');
+                if(elBtn) elBtn.className = 'flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap bg-transparent';
+            });
+            
+            const activeTab = document.getElementById('tab-' + tab);
+            const activeBtn = document.getElementById('btn-tab-' + tab);
+            if(activeTab) activeTab.classList.remove('hidden');
+            
+            let bg = tab === 'wa' ? 'bg-emerald-600' : (tab === 'order' || tab === 'audit' ? 'bg-rose-600' : 'bg-blue-600');
+            if(activeBtn) activeBtn.className = `flex-1 py-2.5 px-2 rounded-lg transition text-white flex items-center justify-center gap-1 whitespace-nowrap shadow ${bg}`;
+            
+            if(tab === 'order') renderOrderList();
+            if(tab === 'wa') updateReportText();
+        }
+
+        function renderDayButtons() {
+            let html = '';
+            availableDays.forEach(d => {
+                const active = (currentDayFilter === d);
+                const cls = active ? 'px-3 py-1.5 rounded-lg font-bold bg-blue-600 text-white whitespace-nowrap shadow' : 'px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-700 whitespace-nowrap hover:bg-slate-200';
+                html += `<button onclick="filterDay('${d}')" class="${cls}">${d}</button>`;
+            });
+            document.getElementById('day-buttons-container').innerHTML = html;
+        }
+
+        function filterDay(day) {
+            currentDayFilter = day;
+            renderDayButtons();
+            renderCustomers();
+        }
+
+        function openAddDayModal() {
+            document.getElementById('new-day-name').value = '';
+            document.getElementById('modal-add-day').classList.remove('hidden');
+        }
+        function closeAddDayModal() {
+            document.getElementById('modal-add-day').classList.add('hidden');
+        }
+        function saveNewDay() {
+            const dayInput = document.getElementById('new-day-name').value.trim().toUpperCase();
+            if(!dayInput) return showToast('Nama hari tidak boleh kosong!', 'error');
+            if(availableDays.includes(dayInput)) return showToast('Hari sudah ada!', 'error');
+
+            saveState();
+            availableDays.push(dayInput);
+            renderDayButtons();
+            closeAddDayModal();
+            saveToLocalStorage();
+            showToast(`Hari "${dayInput}" ditambahkan!`);
+        }
+
+        function openAddCustomerModal() {
+            let sel = document.getElementById('new-cust-area');
+            sel.innerHTML = '';
+            availableDays.filter(d => d !== 'SEMUA').forEach(d => {
+                sel.innerHTML += `<option value="${d}">${d}</option>`;
+            });
+            document.getElementById('new-cust-code').value = '';
+            document.getElementById('new-cust-name').value = '';
+            document.getElementById('new-cust-freezer').value = '';
+            document.getElementById('new-cust-village').value = '';
+            document.getElementById('new-cust-phone').value = '';
+            document.getElementById('modal-add-customer').classList.remove('hidden');
+        }
+        function closeAddCustomerModal() {
+            document.getElementById('modal-add-customer').classList.add('hidden');
+        }
+        function saveNewCustomer() {
+            const area = document.getElementById('new-cust-area').value;
+            const code = document.getElementById('new-cust-code').value.trim().toUpperCase();
+            const name = document.getElementById('new-cust-name').value.trim().toUpperCase();
+            const freezer = document.getElementById('new-cust-freezer').value.trim().toUpperCase();
+            const village = document.getElementById('new-cust-village').value.trim().toUpperCase();
+            const phone = document.getElementById('new-cust-phone').value.trim();
+
+            if(!code || !name) return showToast('Kode Toko dan Nama Toko wajib diisi!', 'error');
+
+            saveState();
+            customers.push({ area, code, freezer: freezer || '-', name, village: village || '-', phone: phone || '-' });
+            renderCustomers();
+            closeAddCustomerModal();
+            saveToLocalStorage();
+            showToast(`Toko ${name} berhasil ditambahkan!`);
+        }
+
+        function renderCustomers() {
+            const q = document.getElementById('search-customer').value.toLowerCase();
+            let html = '';
+            customers.forEach(c => {
+                const matchDay = (currentDayFilter === 'SEMUA' || c.area === currentDayFilter);
+                const matchSearch = (c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.freezer.toLowerCase().includes(q) || c.village.toLowerCase().includes(q));
+                
+                if (matchDay && matchSearch) {
+                    html += `
+                    <div class="flex justify-between items-center p-2.5 border rounded-lg bg-white text-xs hover:bg-slate-50 shadow-sm">
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-1.5 py-0.5 rounded">${c.area}</span>
+                                <span class="font-bold text-slate-800">${c.code} - ${c.name}</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">Freezer: ${c.freezer} | Desa: ${c.village}</div>
+                            <div class="text-[10px] text-slate-500">No HP: ${c.phone}</div>
+                        </div>
+                        <button onclick="selectCustomer('${c.area}', '${c.code}', '${c.name}', '${c.freezer}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-bold shadow">Pilih</button>
+                    </div>`;
+                }
+            });
+            if(html === '') html = '<div class="text-center text-xs p-4 text-slate-400">Data pelanggan tidak ditemukan.</div>';
+            document.getElementById('customer-list').innerHTML = html;
+        }
+
+        function selectCustomer(area, code, name, freezer) {
+            saveState();
+            document.getElementById('audit-day').value = area;
+            document.getElementById('store-code').value = code;
+            document.getElementById('store-name').value = name;
+            document.getElementById('freezer-id').value = freezer;
+            updateReportText();
+            saveToLocalStorage();
+            showToast(`Toko ${name} (${area}) terpilih!`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetField(id) { 
+            saveState();
+            document.getElementById(id).value = ''; 
+            updateReportText(); 
+            saveToLocalStorage();
+        }
+        function resetVisit() { 
+            saveState();
+            document.getElementById('visit-number').value = 1; 
+            updateReportText(); 
+            saveToLocalStorage();
+        }
+        function resetAllForms() {
+            openConfirmModal('Konfirmasi Reset', 'Apakah Anda yakin ingin mereset seluruh form dan data sesi saat ini?', () => {
+                saveState();
+                document.getElementById('audit-day').value = '';
+                document.getElementById('area-code').value = '';
+                document.getElementById('staff-name').value = '';
+                document.getElementById('store-code').value = '';
+                document.getElementById('store-name').value = '';
+                document.getElementById('freezer-id').value = '';
+                resetVisit();
+                orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+                renderPhotoSlots(); renderMasterStock(); updateReportText(); document.getElementById('canvas-output').innerHTML = 'Klik Buat Gambar';
+                saveToLocalStorage();
+                showToast('Form berhasil direset.');
+            });
+        }
+
+        function openAddVariantModal() {
+            document.getElementById('new-var-sku').value = '';
+            document.getElementById('new-var-name').value = '';
+            document.getElementById('new-var-price').value = '';
+            document.getElementById('new-var-stock').value = '0';
+            document.getElementById('modal-add-variant').classList.remove('hidden');
+        }
+        function closeAddVariantModal() {
+            document.getElementById('modal-add-variant').classList.add('hidden');
+        }
+        function askConfirmAddVariant() {
+            const sku = document.getElementById('new-var-sku').value.trim();
+            const name = document.getElementById('new-var-name').value.trim();
+            const price = parseInt(document.getElementById('new-var-price').value);
+            const stock = parseInt(document.getElementById('new-var-stock').value) || 0;
+
+            if(!sku || !name || isNaN(price)) return showToast('SKU, Nama Varian, dan Harga wajib diisi!', 'error');
+            if(products.some(p => p.sku === sku)) return showToast('Kode SKU sudah ada!', 'error');
+
+            closeAddVariantModal();
+            openConfirmModal('Konfirmasi Varian Baru', `Tambahkan varian "${name}" (SKU: ${sku}) dengan harga Rp ${price.toLocaleString('id-ID')} dan stok ${stock} karton?`, () => {
+                saveState();
+                products.push({sku, name, price});
+                masterStock[sku] = stock;
+                renderMasterStock();
+                saveToLocalStorage();
+                showToast(`Varian ${name} berhasil ditambahkan!`);
+            });
+        }
+
+        function updatePrice(sku, val) {
+            const newPrice = parseInt(val);
+            if(isNaN(newPrice) || newPrice < 0) return;
+            const p = products.find(x => x.sku === sku);
+            if(!p) return;
+
+            openConfirmModal('Konfirmasi Ubah Harga', `Ubah harga varian ${p.name} (SKU: ${sku}) menjadi Rp ${newPrice.toLocaleString('id-ID')}?`, () => {
+                saveState();
+                p.price = newPrice;
+                renderMasterStock();
+                updateReportText();
+                saveToLocalStorage();
+                showToast('Harga berhasil diperbarui!');
+            });
+        }
+
+        function deleteVariant(sku) {
+            const p = products.find(x => x.sku === sku);
+            if(!p) return;
+
+            openConfirmModal('Konfirmasi Hapus Varian', `Apakah Anda yakin ingin menghapus varian ${p.name} (SKU: ${sku}) dari daftar produk?`, () => {
+                saveState();
+                products = products.filter(x => x.sku !== sku);
+                delete masterStock[sku];
+                delete orderQty[sku];
+                renderMasterStock();
+                renderOrderList();
+                updateReportText();
+                saveToLocalStorage();
+                showToast('Varian berhasil dihapus.');
+            });
+        }
+
+        function setStock(sku, val) {
+            saveState();
+            masterStock[sku] = Math.max(0, parseInt(val) || 0);
+            renderMasterStock();
+            saveToLocalStorage();
+        }
+
+        function resetMasterStock() {
+            openConfirmModal('Konfirmasi Reset Stok', 'Apakah Anda yakin ingin mereset seluruh stok master menjadi 0?', () => {
+                saveState();
+                products.forEach(p => masterStock[p.sku] = 0);
+                renderMasterStock(); 
+                renderOrderList(); 
+                updateReportText();
+                saveToLocalStorage();
+                showToast('Stok master direset ke 0');
+            });
+        }
+
+        function renderMasterStock() {
+            const q = document.getElementById('search-stock').value.toLowerCase();
+            let html = '';
+            products.forEach(p => {
+                if (p.name.toLowerCase().includes(q) || p.sku.includes(q)) {
+                    const stock = masterStock[p.sku] || 0;
+                    const used = orderQty[p.sku] || 0;
+                    const rem = stock - used;
+                    html += `
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-2.5 border-b text-xs gap-2 bg-white rounded-lg mb-1 shadow-sm">
+                        <div>
+                            <span class="font-bold text-slate-800">[${p.sku}] ${p.name}</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-rose-600 font-medium">Rp</span>
+                                <input type="number" value="${p.price}" onchange="updatePrice('${p.sku}', this.value)" class="w-24 border rounded px-1.5 py-0.5 text-xs font-bold text-rose-600 outline-none">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                            <span class="text-[10px] text-slate-500">Sisa: <span class="${rem>0?'text-emerald-600':'text-rose-600'} font-bold">${rem}</span></span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-[10px] text-slate-500 font-medium">Stok:</span>
+                                <input type="number" min="0" value="${stock}" onchange="setStock('${p.sku}', this.value)" class="w-16 border rounded text-center py-1 font-bold text-slate-800 bg-slate-50">
+                            </div>
+                            <button onclick="deleteVariant('${p.sku}')" class="bg-rose-100 hover:bg-rose-200 text-rose-600 p-1.5 rounded-lg"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>`;
+                }
+            });
+            document.getElementById('master-stock-list').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderPhotoSlots() {
+            let html = '';
+            for(let i=1; i<=5; i++) {
+                let imgHtml = photos[i] ? `<img src="${photos[i]}" class="w-full h-full object-cover rounded-lg">` : `<div class="text-[10px] text-slate-400">Belum diunggah</div>`;
+                html += `
+                <div class="border rounded p-2 bg-slate-50 text-center">
+                    <span class="text-[10px] font-bold block mb-1">${photoTitles[i-1]}</span>
+                    <div class="w-full h-24 bg-slate-200 rounded flex items-center justify-center mb-2 relative overflow-hidden">${imgHtml}</div>
+                    <div class="flex gap-1">
+                        <input type="file" id="cam-${i}" accept="image/*" capture="${i===2?'user':'environment'}" class="hidden" onchange="loadPhoto(${i}, event)">
+                        <input type="file" id="gal-${i}" accept="image/*" class="hidden" onchange="loadPhoto(${i}, event)">
+                        <button onclick="document.getElementById('cam-${i}').click()" class="flex-1 bg-slate-800 text-white text-[9px] py-1.5 rounded">Kamera</button>
+                        <button onclick="document.getElementById('gal-${i}').click()" class="flex-1 bg-rose-600 text-white text-[9px] py-1.5 rounded">Galeri</button>
+                    </div>
+                </div>`;
+            }
+            document.getElementById('photo-slots-container').innerHTML = html;
+        }
+
+        function loadPhoto(idx, ev) {
+            const file = ev.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = e => { 
+                    saveState();
+                    photos[idx] = e.target.result; 
+                    renderPhotoSlots(); 
+                    saveToLocalStorage();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeOrder(sku, delta) {
+            const current = orderQty[sku] || 0;
+            const max = masterStock[sku] || 0;
+            const next = current + delta;
+            
+            if(next > max) return showToast('Melebihi stok master!', 'error');
+            
+            saveState();
+            if(next <= 0) delete orderQty[sku];
+            else orderQty[sku] = next;
+            
+            renderOrderList(); renderMasterStock(); updateReportText();
+            saveToLocalStorage();
+        }
+
+        function renderOrderList() {
+            const q = document.getElementById('search-order').value.toLowerCase();
+            let html = ''; let summaryHtml = ''; let tDus=0; let tHarga=0; let no=1;
+            products.forEach(p => {
+                const max = masterStock[p.sku] || 0;
+                if (max > 0 && (p.name.toLowerCase().includes(q) || p.sku.includes(q))) {
+                    const qty = orderQty[p.sku] || 0;
+                    if(qty > 0) {
+                        summaryHtml += `<div class="flex justify-between"><span>${no++}. ${p.name}</span> <span class="font-bold">${qty} Dus (Rp ${(qty*p.price).toLocaleString('id-ID')})</span></div>`;
+                    }
+                    tDus += qty; tHarga += qty * p.price;
+                    html += `
+                    <div class="flex justify-between items-center p-2 border-b text-xs hover:bg-slate-50">
+                        <div>
+                            <span class="font-bold">[${p.sku}] ${p.name}</span>
+                            <div class="text-[10px] text-rose-600">Rp ${(p.price).toLocaleString('id-ID')}</div>
+                            <div class="text-[10px] text-slate-500">Stok: ${max-qty} Dus</div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="changeOrder('${p.sku}', -1)" class="w-7 h-7 bg-slate-200 rounded font-bold">-</button>
+                            <span class="w-6 text-center font-bold">${qty}</span>
+                            <button onclick="changeOrder('${p.sku}', 1)" class="w-7 h-7 ${qty>=max?'bg-slate-200':'bg-rose-600 text-white'} rounded font-bold">+</button>
+                        </div>
+                    </div>`;
+                }
+            });
+            if(html === '') html = '<div class="text-center text-xs p-4 text-slate-400">Tidak ada produk tersedia. Isi Master Stok dulu.</div>';
+            if(summaryHtml === '') summaryHtml = '<span class="text-slate-400 italic">Belum ada item dipilih</span>';
+
+            document.getElementById('order-list').innerHTML = html;
+            document.getElementById('order-summary-items').innerHTML = summaryHtml;
+            document.getElementById('total-dus').innerText = tDus;
+            document.getElementById('total-harga').innerText = 'Rp ' + tHarga.toLocaleString('id-ID');
+        }
+
+        function updateReportText() {
+            let orderText = ''; let tDus = 0; let tHarga = 0; let no=1;
+            products.forEach(p => {
+                if(orderQty[p.sku]) {
+                    const q = orderQty[p.sku];
+                    const sub = q * p.price;
+                    tDus += q; tHarga += sub;
+                    orderText += `${no++}. Kode ${p.sku} - ${p.name} = *${q} Dus* x Rp ${p.price.toLocaleString('id-ID')} = Rp ${sub.toLocaleString('id-ID')}\n`;
+                }
+            });
+            if(tDus===0) orderText = '*(Tidak ada tambahan order es krim)*\n';
+
+            const txt = `*LAPORAN AUDIT FREEZER & ORDER ES KRIM AICE*
+===================================
+📅 Tanggal/Waktu : ${document.getElementById('audit-date').value}
+📍 Hari Kunjungan: ${(document.getElementById('audit-day').value||'-').toUpperCase()}
+📍 Kode Area     : ${(document.getElementById('area-code').value||'-').toUpperCase()}
+👤 Nama Sales    : ${(document.getElementById('staff-name').value||'-').toUpperCase()}
+🏪 Nama Toko     : ${(document.getElementById('store-name').value||'-').toUpperCase()}
+🆔 ID Toko/Freezer: ${(document.getElementById('store-code').value||'-').toUpperCase()} / ${(document.getElementById('freezer-id').value||'-').toUpperCase()}
+🚗 Kunjungan Ke  : ${document.getElementById('visit-number').value||'1'}
+===================================
+
+📝 *CATATAN AUDIT:* Kondisi unit bersih & beroperasi baik.
+
+📦 *RINCIAN ORDERAN ES KRIM (NOTA):*
+-----------------------------------
+${orderText}-----------------------------------
+*TOTAL BOX ORDER  : ${tDus} Karton*
+*TOTAL TAGIHAN    : Rp ${tHarga.toLocaleString('id-ID')}*
+===================================
+_Laporan dibuat otomatis via Aice Digital System_
+_by Maulani_`;
+            const el = document.getElementById('wa-text');
+            if(el) el.value = txt;
+        }
+
+        async function sendWA() {
+            showToast('Menyiapkan laporan & gambar WhatsApp...', 'info');
+            const cvs = await generateImage();
+            
+            cvs.toBlob(async (blob) => {
+                const file = new File([blob], 'Audit_Aice.jpg', {type: 'image/jpeg'});
+                const textWa = document.getElementById('wa-text').value;
+                
+                try {
+                    if (navigator.share) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Laporan Audit Aice',
+                            text: textWa
+                        });
+                        processPostSend();
+                    } else {
+                        throw new Error('NotSupported');
+                    }
+                } catch(e) {
+                    if (e.name !== 'AbortError') {
+                        const txtEnc = encodeURIComponent(textWa);
+                        window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
+                        processPostSend();
+                    } else {
+                        showToast('Pengiriman dibatalkan');
+                    }
+                }
+            }, 'image/jpeg', 0.85);
+        }
+
+        function processPostSend() {
+            saveState();
+            Object.keys(orderQty).forEach(sku => {
+                masterStock[sku] = Math.max(0, (masterStock[sku] || 0) - orderQty[sku]);
+            });
+            orderQty = {};
+            photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+            const v = document.getElementById('visit-number');
+            v.value = parseInt(v.value || 1) + 1;
+            
+            renderPhotoSlots();
+            renderMasterStock();
+            renderOrderList();
+            updateReportText();
+            saveToLocalStorage();
+            showToast('Laporan terkirim! Stok dikurangi & kunjungan bertambah.');
+        }
+
+        function generateImage() {
+            return new Promise((resolve) => {
+                const cvs = document.getElementById('collage-canvas');
+                const ctx = cvs.getContext('2d');
+                cvs.width = 1200; cvs.height = 1600;
+
+                ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,1200,1600);
+                ctx.fillStyle = '#e11d48'; ctx.fillRect(0,0,1200,150);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 36px Inter, sans-serif';
+                ctx.fillText(`AICE AUDIT [HARI: ${(document.getElementById('audit-day').value||'-').toUpperCase()}] - KE-${document.getElementById('visit-number').value}`, 40, 65);
+                ctx.font = '22px Inter, sans-serif';
+                ctx.fillText(`Toko: ${document.getElementById('store-name').value} | Sales: ${document.getElementById('staff-name').value} | ${document.getElementById('audit-date').value}`, 40, 115);
+
+                const slots = [
+                    {x:40, y:180, w:350, h:480, i:1}, {x:425, y:180, w:350, h:480, i:2}, {x:810, y:180, w:350, h:480, i:3},
+                    {x:40, y:690, w:545, h:560, i:4}, {x:615, y:690, w:545, h:560, i:5}
+                ];
+
+                let loaded = 0;
+                slots.forEach(s => {
+                    ctx.fillStyle = '#1e293b'; ctx.fillRect(s.x, s.y, s.w, s.h);
+                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.strokeRect(s.x, s.y, s.w, s.h);
+
+                    const src = photos[s.i];
+                    if(src) {
+                        const img = new Image();
+                        img.onload = () => {
+                            ctx.drawImage(img, s.x+10, s.y+10, s.w-20, s.h-60);
+                            drawLabel(ctx, s);
+                            loaded++; if(loaded===5) { outputCanvas(); resolve(cvs); }
+                        };
+                        img.src = src;
+                    } else {
+                        ctx.fillStyle = '#94a3b8'; ctx.font = 'italic 18px Inter';
+                        ctx.fillText('Belum Diunggah', s.x + s.w/2 - 70, s.y + s.h/2);
+                        drawLabel(ctx, s);
+                        loaded++; if(loaded===5) { outputCanvas(); resolve(cvs); }
+                    }
+                });
+            });
+        }
+
+        function drawLabel(ctx, s) {
+            ctx.fillStyle = 'rgba(15,23,42,0.9)'; ctx.fillRect(s.x+10, s.y+s.h-50, s.w-20, 40);
+            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 20px Inter'; ctx.fillText(photoTitles[s.i-1], s.x+20, s.y+s.h-22);
+        }
+
+        function outputCanvas() {
+            const cvs = document.getElementById('collage-canvas');
+            const url = cvs.toDataURL('image/jpeg', 0.85);
+            document.getElementById('canvas-output').innerHTML = `
+                <div class="flex flex-col items-center">
+                    <img src="${url}" class="max-h-64 rounded border shadow mb-2">
+                    <div class="flex gap-2">
+                        <a href="${url}" download="Audit_Aice.jpg" class="bg-blue-600 text-white text-[10px] font-bold px-3 py-2 rounded">Simpan JPG</a>
+                        <button onclick="shareImage('${url}')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-2 rounded">Share Gambar WA</button>
+                    </div>
+                </div>`;
+        }
+
+        async function shareImage(url) {
+            try {
+                const blob = await (await fetch(url)).blob();
+                const file = new File([blob], 'Audit.jpg', {type: 'image/jpeg'});
+                if (navigator.share) await navigator.share({ files: [file], title: 'Laporan Audit' });
+            } catch(e) { showToast('Gunakan Simpan JPG'); }
+        }
+
+        function showToast(msg, type='info') {
+            const t = document.createElement('div');
+            t.className = `px-3 py-2 rounded shadow text-white text-[10px] ${type==='error'?'bg-rose-600':'bg-slate-800'}`;
+            t.innerText = msg;
+            document.getElementById('toast').appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+    </script>
+</body>
+</html>
