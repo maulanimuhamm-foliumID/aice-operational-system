@@ -114,7 +114,7 @@
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Hari Kunjungan *</label>
                         <div class="flex gap-1">
-                            <input type="text" id="audit-day" placeholder="Contoh: SENIN / KAMIS" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
+                            <input type="text" id="audit-day" placeholder="Contoh: SENIN / SELASA" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
                             <button onclick="resetField('audit-day')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
     <div id="modal-add-day" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-xl">
             <h3 class="font-bold text-sm text-slate-800">Tambah Hari / Rute Baru</h3>
-            <input type="text" id="new-day-name" placeholder="Contoh: RABU / MINGGU" class="w-full text-xs border rounded-lg p-2.5 outline-none uppercase">
+            <input type="text" id="new-day-name" placeholder="Contoh: MINGGU" class="w-full text-xs border rounded-lg p-2.5 outline-none uppercase">
             <div class="flex gap-2 pt-2">
                 <button onclick="closeAddDayModal()" class="flex-1 bg-slate-200 text-slate-700 text-xs font-bold py-2 rounded-xl">Batal</button>
                 <button onclick="saveNewDay()" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl">Simpan</button>
@@ -418,29 +418,6 @@
         ];
 
         let customers = [
-            // KAMIS
-            { area: 'KAMIS', code: 'D0661', freezer: 'IDNR2019415026', name: 'SUKARNO', village: 'BRAMBANG', phone: '085155010931' },
-            { area: 'KAMIS', code: 'D0672', freezer: 'IDNR2019317195', name: 'PUJI', village: 'PUNDENARUM', phone: '085742837437' },
-            { area: 'KAMIS', code: 'D0815', freezer: 'IDNR2016301599', name: 'MASKURI', village: 'SIDOREJO', phone: '085743316557' },
-            { area: 'KAMIS', code: 'D0819', freezer: 'IDNR2024304433', name: 'RYAN JAYA', village: 'PUNDENARUM', phone: '085726003676' },
-            { area: 'KAMIS', code: 'D0824', freezer: 'IDNR2016301547', name: 'MAULANA', village: 'SIDOREJO', phone: '085726024374' },
-            { area: 'KAMIS', code: 'D0823', freezer: 'IDNR2019314692', name: 'D&A', village: 'SIDOREJO', phone: '085876089261' },
-            { area: 'KAMIS', code: 'D0821', freezer: 'IDNR2016315742', name: 'MB MUD', village: 'SIDOREJO', phone: '089525635356' },
-            { area: 'KAMIS', code: 'D0835', freezer: 'IDNR2016305087', name: 'AKBAR CABEAN', village: 'SIDOREJO', phone: '089668392365' },
-            { area: 'KAMIS', code: 'D0932', freezer: 'IDNR2020302740', name: 'ATK ARUM', village: 'SIDOREJO', phone: '081345786541' },
-            { area: 'KAMIS', code: 'D0922', freezer: 'IDNR2020302729', name: 'MAHMUDI', village: 'PUNDENARUM', phone: '085640568107' },
-            { area: 'KAMIS', code: 'D0916', freezer: 'IDNR2020302540', name: 'USWATUN', village: 'REJOSARI', phone: '085741909269' },
-            { area: 'KAMIS', code: 'D10248', freezer: 'IDNR2021306124', name: 'ARIFAH', village: 'PUNDENARUM', phone: '089534281466' },
-            { area: 'KAMIS', code: 'D10535', freezer: 'IDNR2023303286', name: 'TOKO CITRA', village: 'SIDOREJO', phone: '085876307331' },
-            { area: 'KAMIS', code: 'D10755', freezer: 'IDNR20252012621', name: 'SULASIH', village: 'PUNDENARUM', phone: '0895360985379' },
-            { area: 'KAMIS', code: 'D10901', freezer: 'IDNR2024305818', name: 'SDN TEGOWANU 1', village: 'SIDOREJO', phone: '085640575117' },
-            { area: 'KAMIS', code: 'D11176', freezer: 'IDNR2024203121', name: 'A FAMILY MART', village: 'PUNDENARUM', phone: '085733420887' },
-            { area: 'KAMIS', code: 'D11212', freezer: 'IDN2016315735', name: 'BAKOL JAJAN S&S', village: 'REJOSARI', phone: '081225629879' },
-            { area: 'KAMIS', code: 'D11225', freezer: 'IDNR2020416353', name: 'TOKO PLASTIK BEJO', village: 'BRAMBANG', phone: '087778516739' },
-            { area: 'KAMIS', code: 'D11230', freezer: 'IDNA2018307351', name: 'TOKO RINDI', village: 'REJOSARI', phone: '08973436973' },
-            { area: 'KAMIS', code: 'D11256', freezer: 'IDNR20252013227', name: 'SULASIH 2', village: 'PUNDENARUM', phone: '0895360985379' },
-            { area: 'KAMIS', code: 'D11283', freezer: 'IDNR2016306821', name: 'SALMA STORE', village: 'BRAMBANG', phone: '085327647999' },
-            
             // SENIN
             { area: 'SENIN', code: 'D0712', freezer: 'IDNR2020407811', name: 'HALIMAH', village: 'BANYUMENENG', phone: '085100089837' },
             { area: 'SENIN', code: 'D0755', freezer: 'IDNR2022402163', name: 'MAHARANI 7', village: 'BANYUMENENG', phone: '082137914828' },
@@ -464,28 +441,74 @@
             { area: 'SENIN', code: 'D11246', freezer: 'IDNR2023301330', name: 'TOKO DYAN', village: 'KEBONBATUR', phone: '0895332236509' },
             { area: 'SENIN', code: 'D11328', freezer: 'IDNR2021203280', name: 'TOKO BU ETI', village: 'KEBONBATUR', phone: '087880093366' },
 
-            // SABTU
-            { area: 'SABTU', code: 'D0005', freezer: 'IDNR2019415027', name: 'KASMINTO', village: 'KEDUNGUTER', phone: '082137601423' },
-            { area: 'SABTU', code: 'D0011', freezer: 'IDNR2019403111', name: 'LESTARI', village: 'DUKUN', phone: '085225351305' },
-            { area: 'SABTU', code: 'D0013', freezer: 'IDNR2016305456', name: 'TOKO ANISA JUICE', village: 'PIDODO', phone: '082323972303' },
-            { area: 'SABTU', code: 'D0020', freezer: 'IDNR2016315693', name: 'RIZKI', village: 'KLITIH', phone: '085325203282' },
-            { area: 'SABTU', code: 'D0125', freezer: 'IDNR2016315379', name: 'AGUNG SAMPANG', village: 'SAMPANG', phone: '081227075636' },
-            { area: 'SABTU', code: 'D0017', freezer: 'IDNR2016315972', name: 'TOKO ALI IMRON', village: 'DUKUN', phone: '081215934695' },
-            { area: 'SABTU', code: 'D0122', freezer: 'IDNR2016305871', name: 'ARIS CELL 2', village: 'KLITIH', phone: '088980291220' },
-            { area: 'SABTU', code: 'D0347', freezer: 'IDNR2016310533', name: 'YANTI', village: 'KLITIH', phone: '085701088457' },
-            { area: 'SABTU', code: 'D0621', freezer: 'IDNR2020303667', name: 'TOKO LIMA JAYA', village: 'KEDUNGUTER', phone: '081357993246' },
-            { area: 'SABTU', code: 'D10121', freezer: 'IDNR2021202372', name: 'MBAK IMA', village: 'PIDODO', phone: '085845303834' },
-            { area: 'SABTU', code: 'D10162', freezer: 'IDNR2023302669', name: 'JOKO SUSILO', village: 'KLITIH', phone: '083122642521' },
-            { area: 'SABTU', code: 'D10246', freezer: 'IDNR2020306986', name: 'ABDUL KHALIM', village: 'KLITIH', phone: '081215990798' },
-            { area: 'SABTU', code: 'D10286', freezer: 'IDNR2021305497', name: 'BERKAH', village: 'KLITIH', phone: '081325620503' },
-            { area: 'SABTU', code: 'D10294', freezer: 'IDNR2021202339', name: 'TOKO MASKAN', village: 'SAMPANG', phone: '085225801217' },
-            { area: 'SABTU', code: 'D10568', freezer: 'IDNR2023310299', name: 'TOKO MINDARSIH', village: 'PIDODO', phone: '088216060639' },
-            { area: 'SABTU', code: 'D10610', freezer: 'BIDNAICE2021301754', name: 'TOKO TIN', village: 'SAMPANG', phone: '082220467197' },
-            { area: 'SABTU', code: 'D10802', freezer: 'IDNR2020417470', name: 'SD KEDUNGUTER', village: 'KEDUNGUTER', phone: '085291207355' },
-            { area: 'SABTU', code: 'D10832', freezer: 'IDNR2022305197', name: 'MTS & MA AL IKHWAN', village: 'KLITIH', phone: '082135573606' },
-            { area: 'SABTU', code: 'D10883', freezer: 'IDNR2021202320', name: 'TOKO BU SITI AMINAH', village: 'DUKUN', phone: '083817977980' },
-            { area: 'SABTU', code: 'D10938', freezer: 'IDNR2024307758', name: 'MI RAUDLATUSSYBAN', village: 'SAMPANG', phone: '081325393400' },
-            { area: 'SABTU', code: 'D11210', freezer: 'IDNR2016303646', name: 'SD 1 DUKUN', village: 'DUKUN', phone: '082323919429' },
+            // SELASA
+            { area: 'SELASA', code: 'D0735', freezer: 'IDN2016315973', name: 'TERMINAL DATA', village: 'KANGKUNG', phone: '08574213738' },
+            { area: 'SELASA', code: 'D0737', freezer: 'IDN2020406883', name: 'PRIGI JAYA', village: 'MRANGGEN', phone: '085641429499' },
+            { area: 'SELASA', code: 'D0757', freezer: 'IDN2020406918', name: 'LANA', village: 'MRANGGEN', phone: '085802966869' },
+            { area: 'SELASA', code: 'D0759', freezer: 'IDN2020406517', name: 'KAROMAH', village: 'MRANGGEN', phone: '08930426762' },
+            { area: 'SELASA', code: 'D0764', freezer: 'IDN2020300802', name: 'SALON FOTO MITA', village: 'MRANGGEN', phone: '089668548264' },
+            { area: 'SELASA', code: 'D0847', freezer: 'IDN2020302516', name: 'APOTEK HANA', village: 'PUCANGGADING', phone: '082313050414' },
+            { area: 'SELASA', code: 'D0873', freezer: 'IDN2020302568', name: 'TPQ AL FURQON', village: 'KANGKUNG', phone: '085803031121' },
+            { area: 'SELASA', code: 'D0896', freezer: 'IDN2020302716', name: 'MARGIYONO', village: 'BATURSARI', phone: '081229218879' },
+            { area: 'SELASA', code: 'D0934', freezer: 'IDN2020302649', name: 'MAJU', village: 'MRANGGEN', phone: '083525871040' },
+            { area: 'SELASA', code: 'D0945', freezer: 'IDN2020302535', name: 'PRIMA', village: 'MRANGGEN', phone: '082143140666' },
+            { area: 'SELASA', code: 'D0948', freezer: 'IDN2016306829', name: 'LAWAS', village: 'BATURSARI', phone: '0853525571088' },
+            { area: 'SELASA', code: 'D10214', freezer: 'IDNR2018304665', name: 'TOKO TOMI', village: 'BATURSARI', phone: '081225498316' },
+            { area: 'SELASA', code: 'D10564', freezer: 'IDN2016307422', name: 'TOKO PRAM', village: 'KANGKUNG', phone: '062138281519' },
+            { area: 'SELASA', code: 'D10645', freezer: 'IDN2016302987', name: 'DEWI', village: 'MRANGGEN', phone: '085727523331' },
+            { area: 'SELASA', code: 'D10657', freezer: 'IDN2022303542', name: 'TOKO KJ 28', village: 'BANYUMENENG', phone: '0895332968300' },
+            { area: 'SELASA', code: 'D10708', freezer: 'IDNR2021207652', name: 'SD 2 MRANGGEN', village: 'BATURSARI', phone: '0895403069084' },
+            { area: 'SELASA', code: 'D10724', freezer: 'IDNR2020302656', name: 'WARUNG MADURA SEMBAKO ALA', village: 'MRANGGEN', phone: '087787515264' },
+            { area: 'SELASA', code: 'D10758', freezer: 'IDNR2023306424', name: 'MBAK GIK', village: 'KANGKUNG', phone: '085647966609' },
+            { area: 'SELASA', code: 'D11000', freezer: 'IDNR2024214157', name: 'TOKO NOVI', village: 'MRANGGEN', phone: '085263369533' },
+            { area: 'SELASA', code: 'D11180', freezer: 'IDNR2023310714', name: 'UMI MAFTUCHAH', village: 'BATURSARI', phone: '085640469083' },
+            { area: 'SELASA', code: 'D11168', freezer: 'IDN2016301708', name: 'TOKO RISQY JAYA', village: 'BATURSARI', phone: '083143986514' },
+            { area: 'SELASA', code: 'D11302', freezer: 'IDN2016315815', name: 'TOKO KIKI', village: 'KAUMAN', phone: '081333179881' },
+
+            // RABU
+            { area: 'RABU', code: 'D0338', freezer: 'IDN2016305911', name: 'KARTINI', village: 'MARGOHAYU', phone: '062189932545' },
+            { area: 'RABU', code: 'D0355', freezer: 'IDN2016301728', name: 'MBAK TUN', village: 'WONOSEKAR', phone: '08588270084' },
+            { area: 'RABU', code: 'D0675', freezer: 'IDNR2019317480', name: 'FC GANESHA', village: 'WONOSEKAR', phone: '085726823486' },
+            { area: 'RABU', code: 'D0673', freezer: 'IDNR2022304875', name: 'NUNING', village: 'MARGOHAYU', phone: '08562002771' },
+            { area: 'RABU', code: 'D0732', freezer: 'IDN2020406757', name: 'ARSITA', village: 'TELUK', phone: '082003536860' },
+            { area: 'RABU', code: 'D0788', freezer: 'IDN2023401520', name: 'SUMBER REJEKI', village: 'SUMBEREJO', phone: '081226575707' },
+            { area: 'RABU', code: 'D0803', freezer: 'IDN2020300494', name: 'JENI AL GHAZALI', village: 'MARGOHAYU', phone: '082146227616' },
+            { area: 'RABU', code: 'D0804', freezer: 'IDN2020301331', name: 'SITI NOREH', village: 'WONOSEKAR', phone: '085693752643' },
+            { area: 'RABU', code: 'D0831', freezer: 'IDN2023310709', name: 'KAMMIROPI', village: 'MARGOHAYU', phone: '082134862319' },
+            { area: 'RABU', code: 'D0900', freezer: 'IDN2020302702', name: 'NABILA', village: 'SUMBEREJO', phone: '085690200236' },
+            { area: 'RABU', code: 'D0901', freezer: 'IDN2020302651', name: 'JUMADI', village: 'SUMBEREJO', phone: '088200541295' },
+            { area: 'RABU', code: 'D0917', freezer: 'IDN2020305813', name: 'BU NINK', village: 'TELUK', phone: '0882007286604' },
+            { area: 'RABU', code: 'D10324', freezer: 'IDNR2021306165', name: 'AHMAD THOHIR', village: 'WONOSEKAR', phone: '085876356946' },
+            { area: 'RABU', code: 'D10468', freezer: 'IDN2016305044', name: 'MAHFIROH', village: 'MARGOHAYU', phone: '081392054068' },
+            { area: 'RABU', code: 'D10577', freezer: 'IDNR2023312841', name: 'SUPRIYANTO', village: 'MARGOHAYU', phone: '08802666148' },
+            { area: 'RABU', code: 'D10998', freezer: 'IDNR2021201006', name: 'TOKO SEMBAKO “KAK ANIN”', village: 'SUMBEREJO', phone: '08816623418' },
+            { area: 'RABU', code: 'D11037', freezer: 'IDN20203004083', name: 'TUGU JAYA', village: 'TELUK', phone: '082233363879' },
+            { area: 'RABU', code: 'D11140', freezer: 'IDN2016315144', name: 'TOKO AULIA', village: 'SUMBEREJO', phone: '088220440570' },
+            { area: 'RABU', code: 'D11159', freezer: 'IDN2020205918', name: 'MUAMAROH', village: 'SUMBEREJO', phone: '085640658623' },
+            { area: 'RABU', code: 'D11163', freezer: 'IDN20203301211', name: 'APOTEK SABRINA', village: 'TELUK', phone: '08828821797' },
+
+            // KAMIS
+            { area: 'KAMIS', code: 'D0661', freezer: 'IDNR2019415026', name: 'SUKARNO', village: 'BRAMBANG', phone: '085155010931' },
+            { area: 'KAMIS', code: 'D0672', freezer: 'IDNR2019317195', name: 'PUJI', village: 'PUNDENARUM', phone: '085742837437' },
+            { area: 'KAMIS', code: 'D0815', freezer: 'IDNR2016301599', name: 'MASKURI', village: 'SIDOREJO', phone: '085743316557' },
+            { area: 'KAMIS', code: 'D0819', freezer: 'IDNR2024304433', name: 'RYAN JAYA', village: 'PUNDENARUM', phone: '085726003676' },
+            { area: 'KAMIS', code: 'D0824', freezer: 'IDNR2016301547', name: 'MAULANA', village: 'SIDOREJO', phone: '085726024374' },
+            { area: 'KAMIS', code: 'D0823', freezer: 'IDNR2019314692', name: 'D&A', village: 'SIDOREJO', phone: '085876089261' },
+            { area: 'KAMIS', code: 'D0821', freezer: 'IDNR2016315742', name: 'MB MUD', village: 'SIDOREJO', phone: '089525635356' },
+            { area: 'KAMIS', code: 'D0835', freezer: 'IDNR2016305087', name: 'AKBAR CABEAN', village: 'SIDOREJO', phone: '089668392365' },
+            { area: 'KAMIS', code: 'D0932', freezer: 'IDNR2020302740', name: 'ATK ARUM', village: 'SIDOREJO', phone: '081345786541' },
+            { area: 'KAMIS', code: 'D0922', freezer: 'IDNR2020302729', name: 'MAHMUDI', village: 'PUNDENARUM', phone: '085640568107' },
+            { area: 'KAMIS', code: 'D0916', freezer: 'IDNR2020302540', name: 'USWATUN', village: 'REJOSARI', phone: '085741909269' },
+            { area: 'KAMIS', code: 'D10248', freezer: 'IDNR2021306124', name: 'ARIFAH', village: 'PUNDENARUM', phone: '089534281466' },
+            { area: 'KAMIS', code: 'D10535', freezer: 'IDNR2023303286', name: 'TOKO CITRA', village: 'SIDOREJO', phone: '085876307331' },
+            { area: 'KAMIS', code: 'D10755', freezer: 'IDNR20252012621', name: 'SULASIH', village: 'PUNDENARUM', phone: '0895360985379' },
+            { area: 'KAMIS', code: 'D10901', freezer: 'IDNR2024305818', name: 'SDN TEGOWANU 1', village: 'SIDOREJO', phone: '085640575117' },
+            { area: 'KAMIS', code: 'D11176', freezer: 'IDNR2024203121', name: 'A FAMILY MART', village: 'PUNDENARUM', phone: '085733420887' },
+            { area: 'KAMIS', code: 'D11212', freezer: 'IDN2016315735', name: 'BAKOL JAJAN S&S', village: 'REJOSARI', phone: '081225629879' },
+            { area: 'KAMIS', code: 'D11225', freezer: 'IDNR2020416353', name: 'TOKO PLASTIK BEJO', village: 'BRAMBANG', phone: '087778516739' },
+            { area: 'KAMIS', code: 'D11230', freezer: 'IDNA2018307351', name: 'TOKO RINDI', village: 'REJOSARI', phone: '08973436973' },
+            { area: 'KAMIS', code: 'D11256', freezer: 'IDNR20252013227', name: 'SULASIH 2', village: 'PUNDENARUM', phone: '0895360985379' },
+            { area: 'KAMIS', code: 'D11283', freezer: 'IDNR2016306821', name: 'SALMA STORE', village: 'BRAMBANG', phone: '085327647999' },
 
             // JUMAT
             { area: 'JUMAT', code: 'D0687', freezer: 'IDNR2019314998', name: 'KANTONG CELL', village: 'WARU', phone: '088226914885' },
@@ -510,10 +533,33 @@
             { area: 'JUMAT', code: 'D11207', freezer: 'IDNR2024203635', name: 'APOTEK NGEMPLAK', village: 'NGEMPLAK', phone: '085641661665' },
             { area: 'JUMAT', code: 'D11270', freezer: 'IDNR2016310537', name: 'TOKO ZAINUDDIN', village: 'KEMBANGARUM', phone: '089512108620' },
             { area: 'JUMAT', code: 'D11279', freezer: 'IDNR2021207692', name: 'PONDOK PESANTREN PUTRI ROHMANIYYAH', village: 'NGEMPLAK', phone: '08973692721' },
-            { area: 'JUMAT', code: 'D11311', freezer: 'IDNR2020205022', name: 'SD NEGERI MENUR', village: 'NGEMPLAK', phone: '085602844118' }
+            { area: 'JUMAT', code: 'D11311', freezer: 'IDNR2020205022', name: 'SD NEGERI MENUR', village: 'NGEMPLAK', phone: '085602844118' },
+
+            // SABTU
+            { area: 'SABTU', code: 'D0005', freezer: 'IDNR2019415027', name: 'KASMINTO', village: 'KEDUNGUTER', phone: '082137601423' },
+            { area: 'SABTU', code: 'D0011', freezer: 'IDNR2019403111', name: 'LESTARI', village: 'DUKUN', phone: '085225351305' },
+            { area: 'SABTU', code: 'D0013', freezer: 'IDNR2016305456', name: 'TOKO ANISA JUICE', village: 'PIDODO', phone: '082323972303' },
+            { area: 'SABTU', code: 'D0020', freezer: 'IDNR2016315693', name: 'RIZKI', village: 'KLITIH', phone: '085325203282' },
+            { area: 'SABTU', code: 'D0125', freezer: 'IDNR2016315379', name: 'AGUNG SAMPANG', village: 'SAMPANG', phone: '081227075636' },
+            { area: 'SABTU', code: 'D0017', freezer: 'IDNR2016315972', name: 'TOKO ALI IMRON', village: 'DUKUN', phone: '081215934695' },
+            { area: 'SABTU', code: 'D0122', freezer: 'IDNR2016305871', name: 'ARIS CELL 2', village: 'KLITIH', phone: '088980291220' },
+            { area: 'SABTU', code: 'D0347', freezer: 'IDNR2016310533', name: 'YANTI', village: 'KLITIH', phone: '085701088457' },
+            { area: 'SABTU', code: 'D0621', freezer: 'IDNR2020303667', name: 'TOKO LIMA JAYA', village: 'KEDUNGUTER', phone: '081357993246' },
+            { area: 'SABTU', code: 'D10121', freezer: 'IDNR2021202372', name: 'MBAK IMA', village: 'PIDODO', phone: '085845303834' },
+            { area: 'SABTU', code: 'D10162', freezer: 'IDNR2023302669', name: 'JOKO SUSILO', village: 'KLITIH', phone: '083122642521' },
+            { area: 'SABTU', code: 'D10246', freezer: 'IDNR2020306986', name: 'ABDUL KHALIM', village: 'KLITIH', phone: '081215990798' },
+            { area: 'SABTU', code: 'D10286', freezer: 'IDNR2021305497', name: 'BERKAH', village: 'KLITIH', phone: '081325620503' },
+            { area: 'SABTU', code: 'D10294', freezer: 'IDNR2021202339', name: 'TOKO MASKAN', village: 'SAMPANG', phone: '085225801217' },
+            { area: 'SABTU', code: 'D10568', freezer: 'IDNR2023310299', name: 'TOKO MINDARSIH', village: 'PIDODO', phone: '088216060639' },
+            { area: 'SABTU', code: 'D10610', freezer: 'BIDNAICE2021301754', name: 'TOKO TIN', village: 'SAMPANG', phone: '082220467197' },
+            { area: 'SABTU', code: 'D10802', freezer: 'IDNR2020417470', name: 'SD KEDUNGUTER', village: 'KEDUNGUTER', phone: '085291207355' },
+            { area: 'SABTU', code: 'D10832', freezer: 'IDNR2022305197', name: 'MTS & MA AL IKHWAN', village: 'KLITIH', phone: '082135573606' },
+            { area: 'SABTU', code: 'D10883', freezer: 'IDNR2021202320', name: 'TOKO BU SITI AMINAH', village: 'DUKUN', phone: '083817977980' },
+            { area: 'SABTU', code: 'D10938', freezer: 'IDNR2024307758', name: 'MI RAUDLATUSSYBAN', village: 'SAMPANG', phone: '081325393400' },
+            { area: 'SABTU', code: 'D11210', freezer: 'IDNR2016303646', name: 'SD 1 DUKUN', village: 'DUKUN', phone: '082323919429' }
         ];
 
-        let availableDays = ['SEMUA', 'SENIN', 'KAMIS', 'JUMAT', 'SABTU'];
+        let availableDays = ['SEMUA', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
         let masterStock = {};
         let orderQty = {};
         let photos = {1:null, 2:null, 3:null, 4:null, 5:null};
