@@ -220,7 +220,7 @@
             <!-- TAB 2: AUDIT FOTO -->
             <section id="tab-audit" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
-                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 5 Foto Audit</h3>
+                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 6 Foto Audit & Nota</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div id="photo-slots-container" class="contents"></div>
                     </div>
@@ -562,10 +562,10 @@
         let availableDays = ['SEMUA', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
         let masterStock = {};
         let orderQty = {};
-        let photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+        let photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
         let currentDayFilter = 'SEMUA';
         let stateHistory = [];
-        const photoTitles = ['1. ID Freezer / QR', '2. Selfie Karyawan', '3. Sebelum Dibersihkan', '4. Setelah Dibersihkan', '5. Tata Letak Es Krim'];
+        const photoTitles = ['1. ID Freezer / QR', '2. Selfie Karyawan', '3. Sebelum Dibersihkan', '4. Setelah Dibersihkan', '5. Tata Letak', '6. Foto Nota'];
         let confirmCallback = null;
 
         window.onload = () => {
@@ -920,7 +920,7 @@
                 document.getElementById('store-name').value = '';
                 document.getElementById('freezer-id').value = '';
                 resetVisit();
-                orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+                orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
                 renderPhotoSlots(); renderMasterStock(); updateReportText(); document.getElementById('canvas-output').innerHTML = 'Klik Buat Gambar';
                 saveToLocalStorage();
                 showToast('Form berhasil direset.');
@@ -1043,7 +1043,7 @@
 
         function renderPhotoSlots() {
             let html = '';
-            for(let i=1; i<=5; i++) {
+            for(let i=1; i<=6; i++) {
                 let imgHtml = photos[i] ? `<img src="${photos[i]}" class="w-full h-full object-cover rounded-lg">` : `<div class="text-[10px] text-slate-400">Belum diunggah</div>`;
                 html += `
                 <div class="border rounded p-2 bg-slate-50 text-center">
@@ -1131,31 +1131,19 @@
                     const q = orderQty[p.sku];
                     const sub = q * p.price;
                     tDus += q; tHarga += sub;
-                    orderText += `${no++}. Kode ${p.sku} - ${p.name} = *${q} Dus* x Rp ${p.price.toLocaleString('id-ID')} = Rp ${sub.toLocaleString('id-ID')}\n`;
+                    orderText += `- ${p.name} (${q} Dus)\n`;
                 }
             });
-            if(tDus===0) orderText = '*(Tidak ada tambahan order es krim)*\n';
+            if(tDus===0) orderText = '- (Tidak ada order)\n';
 
-            const txt = `*LAPORAN AUDIT FREEZER & ORDER ES KRIM AICE*
-===================================
-📅 Tanggal/Waktu : ${document.getElementById('audit-date').value}
-📍 Hari Kunjungan: ${(document.getElementById('audit-day').value||'-').toUpperCase()}
-📍 Kode Area     : ${(document.getElementById('area-code').value||'-').toUpperCase()}
-👤 Nama Sales    : ${(document.getElementById('staff-name').value||'-').toUpperCase()}
-🏪 Nama Toko     : ${(document.getElementById('store-name').value||'-').toUpperCase()}
-🆔 ID Toko/Freezer: ${(document.getElementById('store-code').value||'-').toUpperCase()} / ${(document.getElementById('freezer-id').value||'-').toUpperCase()}
-🚗 Kunjungan Ke  : ${document.getElementById('visit-number').value||'1'}
-===================================
+            const txt = `*LAPORAN AUDIT & ORDER AICE*
+📅 ${(document.getElementById('audit-day').value||'-').toUpperCase()} | ${document.getElementById('audit-date').value}
+🏪 *${(document.getElementById('store-name').value||'Toko').toUpperCase()}* (${(document.getElementById('store-code').value||'-').toUpperCase()})
+👤 Sales: ${(document.getElementById('staff-name').value||'-').toUpperCase()}
 
-📝 *CATATAN AUDIT:* Kondisi unit bersih & beroperasi baik.
-
-📦 *RINCIAN ORDERAN ES KRIM (NOTA):*
------------------------------------
-${orderText}-----------------------------------
-*TOTAL BOX ORDER  : ${tDus} Karton*
-*TOTAL TAGIHAN    : Rp ${tHarga.toLocaleString('id-ID')}*
-===================================
-_Laporan dibuat otomatis via Aice Digital System_
+📦 *ORDERAN:*
+${orderText}
+*Total: ${tDus} Dus (Rp ${tHarga.toLocaleString('id-ID')})*
 _by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
@@ -1198,7 +1186,7 @@ _by Maulani_`;
                 masterStock[sku] = Math.max(0, (masterStock[sku] || 0) - orderQty[sku]);
             });
             orderQty = {};
-            photos = {1:null, 2:null, 3:null, 4:null, 5:null};
+            photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
             const v = document.getElementById('visit-number');
             v.value = parseInt(v.value || 1) + 1;
             
@@ -1214,9 +1202,9 @@ _by Maulani_`;
             return new Promise((resolve) => {
                 const cvs = document.getElementById('collage-canvas');
                 const ctx = cvs.getContext('2d');
-                cvs.width = 1200; cvs.height = 1600;
+                cvs.width = 1200; cvs.height = 1800;
 
-                ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,1200,1600);
+                ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,1200,1800);
                 ctx.fillStyle = '#e11d48'; ctx.fillRect(0,0,1200,150);
                 
                 ctx.fillStyle = '#fff';
@@ -1227,7 +1215,7 @@ _by Maulani_`;
 
                 const slots = [
                     {x:40, y:180, w:350, h:480, i:1}, {x:425, y:180, w:350, h:480, i:2}, {x:810, y:180, w:350, h:480, i:3},
-                    {x:40, y:690, w:545, h:560, i:4}, {x:615, y:690, w:545, h:560, i:5}
+                    {x:40, y:690, w:350, h:480, i:4}, {x:425, y:690, w:350, h:480, i:5}, {x:810, y:690, w:350, h:480, i:6}
                 ];
 
                 let loaded = 0;
@@ -1241,14 +1229,14 @@ _by Maulani_`;
                         img.onload = () => {
                             ctx.drawImage(img, s.x+10, s.y+10, s.w-20, s.h-60);
                             drawLabel(ctx, s);
-                            loaded++; if(loaded===5) { outputCanvas(); resolve(cvs); }
+                            loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
                         };
                         img.src = src;
                     } else {
                         ctx.fillStyle = '#94a3b8'; ctx.font = 'italic 18px Inter';
                         ctx.fillText('Belum Diunggah', s.x + s.w/2 - 70, s.y + s.h/2);
                         drawLabel(ctx, s);
-                        loaded++; if(loaded===5) { outputCanvas(); resolve(cvs); }
+                        loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
                     }
                 });
             });
