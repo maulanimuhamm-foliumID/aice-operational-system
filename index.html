@@ -173,7 +173,7 @@
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Pesanan</h2>
             <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
                 <button onclick="switchTab('audit')" id="btn-tab-audit" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Audit (Grid Foto + Timestamp)
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Audit
                 </button>
                 <button onclick="switchTab('order')" id="btn-tab-order" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
                     <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Order
@@ -217,21 +217,15 @@
                 <button onclick="switchTab('audit')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Audit >></button>
             </section>
 
-            <!-- TAB 2: AUDIT FOTO (GRID LAYOUT) -->
+            <!-- TAB 2: AUDIT FOTO -->
             <section id="tab-audit" class="space-y-4 hidden">
-                <div class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-3">
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <h3 class="font-bold text-xs flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Grid Foto Audit (Timestamp Otomatis)</h3>
-                        <button onclick="downloadGridImage()" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow">
-                            <i data-lucide="download" class="w-3.5 h-3.5"></i> Simpan Kolase Grid
-                        </button>
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
+                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 6 Foto Audit & Nota</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div id="photo-slots-container" class="contents"></div>
                     </div>
-                    <p class="text-[10px] text-slate-500">Unggah foto pada slot di bawah. Foto akan otomatis disusun dalam format grid kolase dengan cap waktu.</p>
-                    
-                    <!-- GRID CONTAINER (2x3 Grid) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="photo-slots-container"></div>
                 </div>
-                <button onclick="switchTab('order')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl mt-4">Lanjut ke Order >></button>
+                <button onclick="switchTab('order')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Order >></button>
             </section>
 
             <!-- TAB 3: ORDER -->
@@ -254,26 +248,21 @@
                 <button onclick="switchTab('wa')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Kirim WA >></button>
             </section>
 
-            <!-- TAB 4: WA & KIRIM -->
+            <!-- TAB 4: WA & GAMBAR -->
             <section id="tab-wa" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format Laporan WhatsApp Lengkap</h3>
-                    <textarea id="wa-text" rows="12" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
+                    <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format WA</h3>
+                    <textarea id="wa-text" rows="10" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
                     
-                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900 space-y-1">
-                        <p class="font-bold flex items-center gap-1"><i data-lucide="info" class="w-4 h-4"></i> Petunjuk Kirim:</p>
-                        <p class="text-[11px] text-slate-700">1. Simpan foto grid di tab <strong>Audit</strong> jika diperlukan.</p>
-                        <p class="text-[11px] text-slate-700">2. Klik tombol di bawah untuk menyalin laporan detail ke WhatsApp.</p>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button onclick="downloadGridImage()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 shadow text-xs">
-                            <i data-lucide="download" class="w-4 h-4"></i> Simpan Foto Grid
-                        </button>
-                        <button onclick="sendWA()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 shadow text-xs">
-                            <i data-lucide="send" class="w-4 h-4"></i> Kirim Laporan ke WA
-                        </button>
-                    </div>
+                    <h3 class="font-bold text-xs flex justify-between items-center border-b pb-2 mt-4">
+                        <span class="flex items-center gap-1"><i data-lucide="image" class="w-4 h-4 text-blue-600"></i> Komposit Foto</span>
+                        <button onclick="generateImage()" class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded">Buat Gambar</button>
+                    </h3>
+                    <div id="canvas-output" class="min-h-[100px] border border-dashed flex items-center justify-center bg-slate-50 text-xs text-slate-400 p-2 rounded">Klik Buat Gambar</div>
+                    
+                    <button onclick="sendWA()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl mt-4 flex justify-center items-center gap-2 shadow">
+                        <i data-lucide="send" class="w-4 h-4"></i> Kirim ke WhatsApp
+                    </button>
                 </div>
             </section>
         </main>
@@ -372,9 +361,11 @@
         </div>
     </div>
 
+    <canvas id="collage-canvas" class="hidden"></canvas>
     <div id="toast" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
     <script>
+        // PASSWORD UTAMA (Dapat diganti jika ada karyawan keluar)
         const PASSWORD_RAHASIA = "Aice2026";
 
         function handleLogin(e) {
@@ -427,6 +418,7 @@
         ];
 
         let customers = [
+            // SENIN
             { area: 'SENIN', code: 'D0712', freezer: 'IDNR2020407811', name: 'HALIMAH', village: 'BANYUMENENG', phone: '085100089837' },
             { area: 'SENIN', code: 'D0755', freezer: 'IDNR2022402163', name: 'MAHARANI 7', village: 'BANYUMENENG', phone: '082137914828' },
             { area: 'SENIN', code: 'D0754', freezer: 'IDNR2020406926', name: 'SEPTI', village: 'BANYUMENENG', phone: '081325890273' },
@@ -449,6 +441,7 @@
             { area: 'SENIN', code: 'D11246', freezer: 'IDNR2023301330', name: 'TOKO DYAN', village: 'KEBONBATUR', phone: '0895332236509' },
             { area: 'SENIN', code: 'D11328', freezer: 'IDNR2021203280', name: 'TOKO BU ETI', village: 'KEBONBATUR', phone: '087880093366' },
 
+            // SELASA
             { area: 'SELASA', code: 'D0735', freezer: 'IDN2016315973', name: 'TERMINAL DATA', village: 'KANGKUNG', phone: '08574213738' },
             { area: 'SELASA', code: 'D0737', freezer: 'IDN2020406883', name: 'PRIGI JAYA', village: 'MRANGGEN', phone: '085641429499' },
             { area: 'SELASA', code: 'D0757', freezer: 'IDN2020406918', name: 'LANA', village: 'MRANGGEN', phone: '085802966869' },
@@ -472,6 +465,7 @@
             { area: 'SELASA', code: 'D11168', freezer: 'IDN2016301708', name: 'TOKO RISQY JAYA', village: 'BATURSARI', phone: '083143986514' },
             { area: 'SELASA', code: 'D11302', freezer: 'IDN2016315815', name: 'TOKO KIKI', village: 'KAUMAN', phone: '081333179881' },
 
+            // RABU
             { area: 'RABU', code: 'D0338', freezer: 'IDN2016305911', name: 'KARTINI', village: 'MARGOHAYU', phone: '062189932545' },
             { area: 'RABU', code: 'D0355', freezer: 'IDN2016301728', name: 'MBAK TUN', village: 'WONOSEKAR', phone: '08588270084' },
             { area: 'RABU', code: 'D0675', freezer: 'IDNR2019317480', name: 'FC GANESHA', village: 'WONOSEKAR', phone: '085726823486' },
@@ -493,6 +487,7 @@
             { area: 'RABU', code: 'D11159', freezer: 'IDN2020205918', name: 'MUAMAROH', village: 'SUMBEREJO', phone: '085640658623' },
             { area: 'RABU', code: 'D11163', freezer: 'IDN20203301211', name: 'APOTEK SABRINA', village: 'TELUK', phone: '08828821797' },
 
+            // KAMIS
             { area: 'KAMIS', code: 'D0661', freezer: 'IDNR2019415026', name: 'SUKARNO', village: 'BRAMBANG', phone: '085155010931' },
             { area: 'KAMIS', code: 'D0672', freezer: 'IDNR2019317195', name: 'PUJI', village: 'PUNDENARUM', phone: '085742837437' },
             { area: 'KAMIS', code: 'D0815', freezer: 'IDNR2016301599', name: 'MASKURI', village: 'SIDOREJO', phone: '085743316557' },
@@ -515,6 +510,7 @@
             { area: 'KAMIS', code: 'D11256', freezer: 'IDNR20252013227', name: 'SULASIH 2', village: 'PUNDENARUM', phone: '0895360985379' },
             { area: 'KAMIS', code: 'D11283', freezer: 'IDNR2016306821', name: 'SALMA STORE', village: 'BRAMBANG', phone: '085327647999' },
 
+            // JUMAT
             { area: 'JUMAT', code: 'D0687', freezer: 'IDNR2019314998', name: 'KANTONG CELL', village: 'WARU', phone: '088226914885' },
             { area: 'JUMAT', code: 'D0713', freezer: 'IDNR2020406932', name: 'LANGGENG MAKMUR', village: 'KEMBANGARUM', phone: '081347654876' },
             { area: 'JUMAT', code: 'D0717', freezer: 'IDNR2020407766', name: 'SUKOWATI', village: 'TEGALARUM', phone: '085270267499' },
@@ -539,6 +535,7 @@
             { area: 'JUMAT', code: 'D11279', freezer: 'IDNR2021207692', name: 'PONDOK PESANTREN PUTRI ROHMANIYYAH', village: 'NGEMPLAK', phone: '08973692721' },
             { area: 'JUMAT', code: 'D11311', freezer: 'IDNR2020205022', name: 'SD NEGERI MENUR', village: 'NGEMPLAK', phone: '085602844118' },
 
+            // SABTU
             { area: 'SABTU', code: 'D0005', freezer: 'IDNR2019415027', name: 'KASMINTO', village: 'KEDUNGUTER', phone: '082137601423' },
             { area: 'SABTU', code: 'D0011', freezer: 'IDNR2019403111', name: 'LESTARI', village: 'DUKUN', phone: '085225351305' },
             { area: 'SABTU', code: 'D0013', freezer: 'IDNR2016305456', name: 'TOKO ANISA JUICE', village: 'PIDODO', phone: '082323972303' },
@@ -599,7 +596,6 @@
             const opts = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             const el = document.getElementById('audit-date');
             if(el) el.value = now.toLocaleDateString('id-ID', opts) + ' WIB';
-            updateReportText();
         }
 
         function saveState() {
@@ -639,11 +635,11 @@
                     visitNumber: document.getElementById('visit-number').value
                 }
             };
-            localStorage.setItem('aice_app_state_v5', JSON.stringify(state));
+            localStorage.setItem('aice_app_state_v4', JSON.stringify(state));
         }
 
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('aice_app_state_v5') || localStorage.getItem('aice_app_state_v4');
+            const saved = localStorage.getItem('aice_app_state_v4');
             if(saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -730,7 +726,7 @@
         }
 
         function backupData() {
-            const data = localStorage.getItem('aice_app_state_v5') || '{}';
+            const data = localStorage.getItem('aice_app_state_v4') || '{}';
             const blob = new Blob([data], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -749,7 +745,7 @@
             reader.onload = (evt) => {
                 try {
                     JSON.parse(evt.target.result);
-                    localStorage.setItem('aice_app_state_v5', evt.target.result);
+                    localStorage.setItem('aice_app_state_v4', evt.target.result);
                     loadFromLocalStorage();
                     renderDayButtons();
                     renderCustomers();
@@ -769,7 +765,6 @@
         function clearAppCache() {
             document.getElementById('data-dropdown').classList.add('hidden');
             openConfirmModal('Hapus Cache Aplikasi', 'Apakah Anda yakin ingin menghapus seluruh cache dan data tersimpan di perangkat ini?', () => {
-                localStorage.removeItem('aice_app_state_v5');
                 localStorage.removeItem('aice_app_state_v4');
                 stateHistory = [];
                 location.reload();
@@ -926,7 +921,7 @@
                 document.getElementById('freezer-id').value = '';
                 resetVisit();
                 orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
-                renderPhotoSlots(); renderMasterStock(); updateReportText();
+                renderPhotoSlots(); renderMasterStock(); updateReportText(); document.getElementById('canvas-output').innerHTML = 'Klik Buat Gambar';
                 saveToLocalStorage();
                 showToast('Form berhasil direset.');
             });
@@ -1051,152 +1046,32 @@
             for(let i=1; i<=6; i++) {
                 let imgHtml = photos[i] ? `<img src="${photos[i]}" class="w-full h-full object-cover rounded-lg">` : `<div class="text-[10px] text-slate-400">Belum diunggah</div>`;
                 html += `
-                <div class="border rounded p-2.5 bg-slate-50 text-center space-y-2 flex flex-col justify-between">
-                    <div>
-                        <span class="text-[11px] font-bold block text-slate-700 mb-1">${photoTitles[i-1]}</span>
-                        <div class="w-full h-28 bg-slate-200 rounded flex items-center justify-center relative overflow-hidden shadow-inner">${imgHtml}</div>
-                    </div>
-                    <div class="flex gap-1 pt-1">
+                <div class="border rounded p-2 bg-slate-50 text-center">
+                    <span class="text-[10px] font-bold block mb-1">${photoTitles[i-1]}</span>
+                    <div class="w-full h-24 bg-slate-200 rounded flex items-center justify-center mb-2 relative overflow-hidden">${imgHtml}</div>
+                    <div class="flex gap-1">
                         <input type="file" id="cam-${i}" accept="image/*" capture="${i===2?'user':'environment'}" class="hidden" onchange="loadPhoto(${i}, event)">
                         <input type="file" id="gal-${i}" accept="image/*" class="hidden" onchange="loadPhoto(${i}, event)">
-                        <button onclick="document.getElementById('cam-${i}').click()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-[10px] py-1.5 rounded font-medium">Kamera</button>
-                        <button onclick="document.getElementById('gal-${i}').click()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-[10px] py-1.5 rounded font-medium">Galeri</button>
+                        <button onclick="document.getElementById('cam-${i}').click()" class="flex-1 bg-slate-800 text-white text-[9px] py-1.5 rounded">Kamera</button>
+                        <button onclick="document.getElementById('gal-${i}').click()" class="flex-1 bg-rose-600 text-white text-[9px] py-1.5 rounded">Galeri</button>
                     </div>
                 </div>`;
             }
             document.getElementById('photo-slots-container').innerHTML = html;
-            lucide.createIcons();
         }
 
         function loadPhoto(idx, ev) {
             const file = ev.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    const maxWidth = 800;
-                    let scale = maxWidth / img.width;
-                    if(scale > 1) scale = 1;
-                    
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-                    
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    const bannerHeight = 85 * (canvas.width / 800);
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-                    ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
-                    
-                    ctx.fillStyle = '#38bdf8';
-                    ctx.font = `bold ${Math.round(22 * (canvas.width / 800))}px Inter, sans-serif`;
-                    ctx.fillText(photoTitles[idx-1], 16, canvas.height - bannerHeight + 30);
-                    
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = `${Math.round(16 * (canvas.width / 800))}px Inter, sans-serif`;
-                    const storeName = document.getElementById('store-name').value || 'TOKO';
-                    const timeStr = document.getElementById('audit-date').value || new Date().toLocaleString('id-ID');
-                    ctx.fillText(`🏪 ${storeName} | 🕒 ${timeStr}`, 16, canvas.height - bannerHeight + 60);
-                    
-                    const stampedUrl = canvas.toDataURL('image/jpeg', 0.85);
-                    
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = e => { 
                     saveState();
-                    photos[idx] = stampedUrl;
-                    renderPhotoSlots();
+                    photos[idx] = e.target.result; 
+                    renderPhotoSlots(); 
                     saveToLocalStorage();
-                    showToast(`Foto ${photoTitles[idx-1]} dimuat & diberi timestamp!`);
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function downloadGridImage() {
-            let loadedCount = 0;
-            let loadedImgs = {};
-            
-            for(let i=1; i<=6; i++) {
-                if(photos[i]) {
-                    const img = new Image();
-                    img.onload = () => {
-                        loadedImgs[i] = img;
-                        loadedCount++;
-                        if(loadedCount === Object.keys(photos).filter(k => photos[k]).length) {
-                            generateCollageCanvas(loadedImgs);
-                        }
-                    };
-                    img.src = photos[i];
-                }
+                reader.readAsDataURL(file);
             }
-            if(Object.keys(photos).filter(k => photos[k]).length === 0) {
-                return showToast('Belum ada foto yang diunggah!', 'error');
-            }
-        }
-
-        function generateCollageCanvas(imgMap) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            const cols = 2;
-            const rows = 3;
-            const cellW = 600;
-            const cellH = 600;
-            
-            canvas.width = cols * cellW;
-            canvas.height = rows * cellH;
-            
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            let idx = 0;
-            for(let r=0; r<rows; r++) {
-                for(let c=0; c<cols; c++) {
-                    idx++;
-                    const x = c * cellW;
-                    const y = r * cellH;
-                    
-                    ctx.fillStyle = '#1e293b';
-                    ctx.fillRect(x + 5, y + 5, cellW - 10, cellH - 10);
-                    
-                    if(imgMap[idx]) {
-                        const img = imgMap[idx];
-                        const hRatio = (cellW - 20) / img.width;
-                        const vRatio = (cellH - 60) / img.height;
-                        const ratio = Math.max(hRatio, vRatio);
-                        const centerShiftX = (cellW - 20 - img.width * ratio) / 2;
-                        const centerShiftY = (cellH - 60 - img.height * ratio) / 2;
-                        
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.rect(x + 10, y + 10, cellW - 20, cellH - 70);
-                        ctx.clip();
-                        ctx.drawImage(img, 0, 0, img.width, img.height, x + 10 + centerShiftX, y + 10 + centerShiftY, img.width * ratio, img.height * ratio);
-                        ctx.restore();
-                    }
-                    
-                    // Label Banner per cell
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-                    ctx.fillRect(x + 10, y + cellH - 60, cellW - 20, 50);
-                    
-                    ctx.fillStyle = '#38bdf8';
-                    ctx.font = 'bold 20px Inter, sans-serif';
-                    ctx.fillText(photoTitles[idx-1], x + 20, y + cellH - 35);
-                    
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '14px Inter, sans-serif';
-                    const storeName = document.getElementById('store-name').value || 'TOKO';
-                    ctx.fillText(`🏪 ${storeName}`, x + 20, y + cellH - 15);
-                }
-            }
-            
-            const link = document.createElement('a');
-            link.download = `Aice_Kolase_Grid_${Date.now()}.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.9);
-            link.click();
-            showToast('Kolase grid foto berhasil diunduh!');
         }
 
         function changeOrder(sku, delta) {
@@ -1256,41 +1131,53 @@
                     const q = orderQty[p.sku];
                     const sub = q * p.price;
                     tDus += q; tHarga += sub;
-                    orderText += `${no++}. Kode ${p.sku} - ${p.name} = *${q} Dus* x Rp ${p.price.toLocaleString('id-ID')} = Rp ${sub.toLocaleString('id-ID')}\n`;
+                    orderText += `- ${p.name} (${q} Dus)\n`;
                 }
             });
-            if(tDus===0) orderText = '*(Tidak ada tambahan order es krim)*\n';
+            if(tDus===0) orderText = '- (Tidak ada order)\n';
 
-            const txt = `*LAPORAN AUDIT FREEZER & ORDER ES KRIM AICE*
-===================================
-📅 Tanggal/Waktu : ${document.getElementById('audit-date').value}
-📍 Hari Kunjungan: ${(document.getElementById('audit-day').value||'-').toUpperCase()}
-📍 Kode Area     : ${(document.getElementById('area-code').value||'-').toUpperCase()}
-👤 Nama Sales    : ${(document.getElementById('staff-name').value||'-').toUpperCase()}
-🏪 Nama Toko     : ${(document.getElementById('store-name').value||'-').toUpperCase()}
-🆔 ID Toko/Freezer: ${(document.getElementById('store-code').value||'-').toUpperCase()} / ${(document.getElementById('freezer-id').value||'-').toUpperCase()}
-🚗 Kunjungan Ke  : ${document.getElementById('visit-number').value||'1'}
-===================================
+            const txt = `*LAPORAN AUDIT & ORDER AICE*
+📅 ${(document.getElementById('audit-day').value||'-').toUpperCase()} | ${document.getElementById('audit-date').value}
+🏪 *${(document.getElementById('store-name').value||'Toko').toUpperCase()}* (${(document.getElementById('store-code').value||'-').toUpperCase()})
+👤 Sales: ${(document.getElementById('staff-name').value||'-').toUpperCase()}
 
-📝 *CATATAN AUDIT:* Kondisi unit bersih & beroperasi baik.
-
-📦 *RINCIAN ORDERAN ES KRIM (NOTA):*
------------------------------------
-${orderText}-----------------------------------
-*TOTAL BOX ORDER  : ${tDus} Karton*
-*TOTAL TAGIHAN    : Rp ${tHarga.toLocaleString('id-ID')}*
-===================================
-_Laporan dibuat otomatis via Aice Digital System_
+📦 *ORDERAN:*
+${orderText}
+*Total: ${tDus} Dus (Rp ${tHarga.toLocaleString('id-ID')})*
 _by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
         }
 
-        function sendWA() {
-            const textWa = document.getElementById('wa-text').value;
-            const txtEnc = encodeURIComponent(textWa);
-            window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
-            processPostSend();
+        async function sendWA() {
+            showToast('Menyiapkan laporan & gambar WhatsApp...', 'info');
+            const cvs = await generateImage();
+            
+            cvs.toBlob(async (blob) => {
+                const file = new File([blob], 'Audit_Aice.jpg', {type: 'image/jpeg'});
+                const textWa = document.getElementById('wa-text').value;
+                
+                try {
+                    if (navigator.share) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Laporan Audit Aice',
+                            text: textWa
+                        });
+                        processPostSend();
+                    } else {
+                        throw new Error('NotSupported');
+                    }
+                } catch(e) {
+                    if (e.name !== 'AbortError') {
+                        const txtEnc = encodeURIComponent(textWa);
+                        window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
+                        processPostSend();
+                    } else {
+                        showToast('Pengiriman dibatalkan');
+                    }
+                }
+            }, 'image/jpeg', 0.85);
         }
 
         function processPostSend() {
@@ -1309,6 +1196,76 @@ _by Maulani_`;
             updateReportText();
             saveToLocalStorage();
             showToast('Laporan terkirim! Stok dikurangi & kunjungan bertambah.');
+        }
+
+        function generateImage() {
+            return new Promise((resolve) => {
+                const cvs = document.getElementById('collage-canvas');
+                const ctx = cvs.getContext('2d');
+                cvs.width = 1200; cvs.height = 1800;
+
+                ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,1200,1800);
+                ctx.fillStyle = '#e11d48'; ctx.fillRect(0,0,1200,150);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 36px Inter, sans-serif';
+                ctx.fillText(`AICE AUDIT [HARI: ${(document.getElementById('audit-day').value||'-').toUpperCase()}] - KE-${document.getElementById('visit-number').value}`, 40, 65);
+                ctx.font = '22px Inter, sans-serif';
+                ctx.fillText(`Toko: ${document.getElementById('store-name').value} | Sales: ${document.getElementById('staff-name').value} | ${document.getElementById('audit-date').value}`, 40, 115);
+
+                const slots = [
+                    {x:40, y:180, w:350, h:480, i:1}, {x:425, y:180, w:350, h:480, i:2}, {x:810, y:180, w:350, h:480, i:3},
+                    {x:40, y:690, w:350, h:480, i:4}, {x:425, y:690, w:350, h:480, i:5}, {x:810, y:690, w:350, h:480, i:6}
+                ];
+
+                let loaded = 0;
+                slots.forEach(s => {
+                    ctx.fillStyle = '#1e293b'; ctx.fillRect(s.x, s.y, s.w, s.h);
+                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.strokeRect(s.x, s.y, s.w, s.h);
+
+                    const src = photos[s.i];
+                    if(src) {
+                        const img = new Image();
+                        img.onload = () => {
+                            ctx.drawImage(img, s.x+10, s.y+10, s.w-20, s.h-60);
+                            drawLabel(ctx, s);
+                            loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
+                        };
+                        img.src = src;
+                    } else {
+                        ctx.fillStyle = '#94a3b8'; ctx.font = 'italic 18px Inter';
+                        ctx.fillText('Belum Diunggah', s.x + s.w/2 - 70, s.y + s.h/2);
+                        drawLabel(ctx, s);
+                        loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
+                    }
+                });
+            });
+        }
+
+        function drawLabel(ctx, s) {
+            ctx.fillStyle = 'rgba(15,23,42,0.9)'; ctx.fillRect(s.x+10, s.y+s.h-50, s.w-20, 40);
+            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 20px Inter'; ctx.fillText(photoTitles[s.i-1], s.x+20, s.y+s.h-22);
+        }
+
+        function outputCanvas() {
+            const cvs = document.getElementById('collage-canvas');
+            const url = cvs.toDataURL('image/jpeg', 0.85);
+            document.getElementById('canvas-output').innerHTML = `
+                <div class="flex flex-col items-center">
+                    <img src="${url}" class="max-h-64 rounded border shadow mb-2">
+                    <div class="flex gap-2">
+                        <a href="${url}" download="Audit_Aice.jpg" class="bg-blue-600 text-white text-[10px] font-bold px-3 py-2 rounded">Simpan JPG</a>
+                        <button onclick="shareImage('${url}')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-2 rounded">Share Gambar WA</button>
+                    </div>
+                </div>`;
+        }
+
+        async function shareImage(url) {
+            try {
+                const blob = await (await fetch(url)).blob();
+                const file = new File([blob], 'Audit.jpg', {type: 'image/jpeg'});
+                if (navigator.share) await navigator.share({ files: [file], title: 'Laporan Audit' });
+            } catch(e) { showToast('Gunakan Simpan JPG'); }
         }
 
         function showToast(msg, type='info') {
