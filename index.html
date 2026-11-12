@@ -121,7 +121,7 @@
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Kode Area *</label>
                         <div class="flex gap-1">
-                            <input type="text" id="area-code" placeholder="Contoh: KUDUS-01" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
+                            <input type="text" id="area-code" placeholder="Contoh: KUDUS-01 / D1" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-rose-500 outline-none">
                             <button onclick="resetField('area-code')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
                         </div>
                     </div>
@@ -141,19 +141,31 @@
                         <input type="text" id="store-name" placeholder="Nama Toko" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none">
                     </div>
                     <div>
-                        <label class="block font-medium text-slate-700 mb-1">Kunjungan Ke & Waktu</label>
-                        <div class="flex gap-1">
-                            <div class="flex items-center gap-1 bg-slate-100 border border-slate-300 rounded-lg px-2 w-24">
-                                <span class="text-[10px] text-slate-500">Ke-</span>
-                                <input type="number" id="visit-number" value="1" min="1" onchange="updateReportText(); saveToLocalStorage();" class="w-full bg-transparent font-bold text-rose-600 outline-none">
-                            </div>
-                            <button onclick="resetVisit()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 rounded-lg"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
-                            <input type="text" id="audit-date" readonly class="w-full border border-slate-200 bg-slate-50 text-[10px] text-slate-500 rounded-lg p-2">
-                        </div>
-                    </div>
-                    <div>
                         <label class="block font-medium text-slate-700 mb-1">ID Freezer</label>
                         <input type="text" id="freezer-id" placeholder="Barcode / ID Freezer" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Keterangan Toko</label>
+                        <input type="text" id="store-status" value="BUKA" oninput="updateReportText(); saveToLocalStorage();" class="w-full border border-slate-300 rounded-lg p-2 outline-none uppercase font-bold text-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Kunjungan & Minggu Ke-</label>
+                        <div class="flex gap-2">
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-lg px-2 flex-1">
+                                <span class="text-[10px] text-slate-500">Harian Ke-</span>
+                                <input type="number" id="daily-visit" value="1" min="1" onchange="updateReportText(); saveToLocalStorage();" class="w-full bg-transparent font-bold text-rose-600 outline-none">
+                                <button onclick="resetFieldNum('daily-visit', 1)" class="text-slate-400 hover:text-slate-700" title="Reset Harian"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                            </div>
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-lg px-2 flex-1">
+                                <span class="text-[10px] text-slate-500">Minggu Ke-</span>
+                                <input type="number" id="week-number" value="1" min="1" max="5" onchange="updateReportText(); saveToLocalStorage();" class="w-full bg-transparent font-bold text-blue-600 outline-none">
+                                <button onclick="resetFieldNum('week-number', 1)" class="text-slate-400 hover:text-slate-700" title="Reset Minggu"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-medium text-slate-700 mb-1">Waktu Sistem</label>
+                        <input type="text" id="audit-date" readonly class="w-full border border-slate-200 bg-slate-50 text-[10px] text-slate-500 rounded-lg p-2">
                     </div>
                 </div>
             </section>
@@ -606,7 +618,9 @@
                     storeCode: document.getElementById('store-code')?.value || '',
                     storeName: document.getElementById('store-name')?.value || '',
                     freezerId: document.getElementById('freezer-id')?.value || '',
-                    visitNumber: document.getElementById('visit-number')?.value || '1'
+                    storeStatus: document.getElementById('store-status')?.value || 'BUKA',
+                    dailyVisit: document.getElementById('daily-visit')?.value || '1',
+                    weekNumber: document.getElementById('week-number')?.value || '1'
                 }
             };
             stateHistory.push(currentState);
@@ -624,14 +638,16 @@
                     storeCode: document.getElementById('store-code').value,
                     storeName: document.getElementById('store-name').value,
                     freezerId: document.getElementById('freezer-id').value,
-                    visitNumber: document.getElementById('visit-number').value
+                    storeStatus: document.getElementById('store-status').value,
+                    dailyVisit: document.getElementById('daily-visit').value,
+                    weekNumber: document.getElementById('week-number').value
                 }
             };
-            localStorage.setItem('aice_app_state_v6', JSON.stringify(state));
+            localStorage.setItem('aice_app_state_v7', JSON.stringify(state));
         }
 
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('aice_app_state_v6') || localStorage.getItem('aice_app_state_v5');
+            const saved = localStorage.getItem('aice_app_state_v7') || localStorage.getItem('aice_app_state_v6');
             if(saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -649,7 +665,9 @@
                         document.getElementById('store-code').value = data.form.storeCode || '';
                         document.getElementById('store-name').value = data.form.storeName || '';
                         document.getElementById('freezer-id').value = data.form.freezerId || '';
-                        document.getElementById('visit-number').value = data.form.visitNumber || '1';
+                        document.getElementById('store-status').value = data.form.storeStatus || 'BUKA';
+                        document.getElementById('daily-visit').value = data.form.dailyVisit || '1';
+                        document.getElementById('week-number').value = data.form.weekNumber || '1';
                     }
                 } catch(e) { console.error(e); }
             }
@@ -686,7 +704,9 @@
             document.getElementById('store-code').value = prev.form.storeCode;
             document.getElementById('store-name').value = prev.form.storeName;
             document.getElementById('freezer-id').value = prev.form.freezerId;
-            document.getElementById('visit-number').value = prev.form.visitNumber;
+            document.getElementById('store-status').value = prev.form.storeStatus;
+            document.getElementById('daily-visit').value = prev.form.dailyVisit;
+            document.getElementById('week-number').value = prev.form.weekNumber;
 
             renderDayButtons();
             renderCustomers();
@@ -718,7 +738,7 @@
         }
 
         function backupData() {
-            const data = localStorage.getItem('aice_app_state_v6') || '{}';
+            const data = localStorage.getItem('aice_app_state_v7') || '{}';
             const blob = new Blob([data], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -737,7 +757,7 @@
             reader.onload = (evt) => {
                 try {
                     JSON.parse(evt.target.result);
-                    localStorage.setItem('aice_app_state_v6', evt.target.result);
+                    localStorage.setItem('aice_app_state_v7', evt.target.result);
                     loadFromLocalStorage();
                     renderDayButtons();
                     renderCustomers();
@@ -757,8 +777,8 @@
         function clearAppCache() {
             document.getElementById('data-dropdown').classList.add('hidden');
             openConfirmModal('Hapus Cache Aplikasi', 'Apakah Anda yakin ingin menghapus seluruh cache dan data tersimpan di perangkat ini?', () => {
+                localStorage.removeItem('aice_app_state_v7');
                 localStorage.removeItem('aice_app_state_v6');
-                localStorage.removeItem('aice_app_state_v5');
                 stateHistory = [];
                 location.reload();
             });
@@ -897,12 +917,15 @@
             updateReportText(); 
             saveToLocalStorage();
         }
-        function resetVisit() { 
+
+        function resetFieldNum(id, val) {
             saveState();
-            document.getElementById('visit-number').value = 1; 
-            updateReportText(); 
+            document.getElementById(id).value = val;
+            updateReportText();
             saveToLocalStorage();
+            showToast('Nilai direset ke ' + val);
         }
+
         function resetAllForms() {
             openConfirmModal('Konfirmasi Reset', 'Apakah Anda yakin ingin mereset seluruh form dan data sesi saat ini?', () => {
                 saveState();
@@ -912,7 +935,9 @@
                 document.getElementById('store-code').value = '';
                 document.getElementById('store-name').value = '';
                 document.getElementById('freezer-id').value = '';
-                resetVisit();
+                document.getElementById('store-status').value = 'BUKA';
+                document.getElementById('daily-visit').value = '1';
+                document.getElementById('week-number').value = '1';
                 orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
                 renderPhotoSlots(); renderMasterStock(); updateReportText();
                 saveToLocalStorage();
@@ -1077,15 +1102,12 @@
                     canvas.width = img.width * scale;
                     canvas.height = img.height * scale;
                     
-                    // Draw original high-res photo standalone (no grid)
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    // Draw Timestamp Watermark Banner at bottom
                     const bannerHeight = 100 * (canvas.width / 1080);
                     ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
                     ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
                     
-                    // Watermark text styling
                     ctx.fillStyle = '#38bdf8';
                     ctx.font = `bold ${Math.round(26 * (canvas.width / 1080))}px Inter, sans-serif`;
                     ctx.fillText(photoTitles[idx-1], 24, canvas.height - bannerHeight + 36);
@@ -1166,16 +1188,22 @@
                     const q = orderQty[p.sku];
                     const sub = q * p.price;
                     tDus += q; tHarga += sub;
-                    orderText += `- ${p.name}: *${q} Dus* (Rp ${sub.toLocaleString('id-ID')})\n`;
+                    orderText += `- [${p.sku}] ${p.name}: *${q} Dus* (Rp ${sub.toLocaleString('id-ID')})\n`;
                 }
             });
             if(tDus===0) orderText = '- (Tidak ada order es krim)\n';
 
+            const salesName = (document.getElementById('staff-name')?.value || '-').toUpperCase();
+            const areaCode = (document.getElementById('area-code')?.value || '-').toUpperCase();
+            const salesInfo = areaCode !== '-' ? `${salesName} | ${areaCode}` : salesName;
+
             const txt = `*LAPORAN AUDIT & ORDER AICE*
 📅 ${(document.getElementById('audit-day').value||'-').toUpperCase()} | ${document.getElementById('audit-date').value}
 🏪 *${(document.getElementById('store-name').value||'Toko').toUpperCase()}* (${(document.getElementById('store-code').value||'-').toUpperCase()})
-👤 Sales: ${(document.getElementById('staff-name').value||'-').toUpperCase()}
-🆔 Freezer: ${(document.getElementById('freezer-id').value||'-').toUpperCase()} | Kunjungan Ke-${document.getElementById('visit-number').value||'1'}
+👤 Sales: ${salesInfo}
+📌 Kunjungan Harian Ke-${document.getElementById('daily-visit')?.value||'1'} | Minggu Ke-${document.getElementById('week-number')?.value||'1'}
+🆔 Freezer: ${(document.getElementById('freezer-id').value||'-').toUpperCase()}
+🟢 Keterangan: ${(document.getElementById('store-status')?.value||'BUKA').toUpperCase()}
 
 📦 *ORDERAN:*
 ${orderText}
@@ -1240,15 +1268,16 @@ _by Maulani_`;
             });
             orderQty = {};
             photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
-            const v = document.getElementById('visit-number');
-            v.value = parseInt(v.value || 1) + 1;
+            
+            const dv = document.getElementById('daily-visit');
+            if(dv) dv.value = parseInt(dv.value || 1) + 1;
             
             renderPhotoSlots();
             renderMasterStock();
             renderOrderList();
             updateReportText();
             saveToLocalStorage();
-            showToast('Laporan terkirim! Stok dikurangi & kunjungan bertambah.');
+            showToast('Laporan terkirim! Stok dikurangi & kunjungan harian bertambah.');
         }
 
         function showToast(msg, type='info') {
