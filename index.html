@@ -173,7 +173,7 @@
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Pesanan</h2>
             <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
                 <button onclick="switchTab('audit')" id="btn-tab-audit" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
-                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Audit
+                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Audit (Foto + Timestamp)
                 </button>
                 <button onclick="switchTab('order')" id="btn-tab-order" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
                     <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Order
@@ -220,12 +220,13 @@
             <!-- TAB 2: AUDIT FOTO -->
             <section id="tab-audit" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
-                    <h3 class="font-bold text-xs border-b pb-2 mb-3 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 6 Foto Audit & Nota</h3>
+                    <h3 class="font-bold text-xs border-b pb-2 mb-1 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 6 Foto Audit (Otomatis Ada Timestamp)</h3>
+                    <p class="text-[10px] text-slate-500 mb-3">Foto berdiri sendiri (tanpa grid), lengkap dengan watermark tanggal & toko.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div id="photo-slots-container" class="contents"></div>
                     </div>
                 </div>
-                <button onclick="switchTab('order')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Order >></button>
+                <button onclick="switchTab('order')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl mt-4">Lanjut ke Order >></button>
             </section>
 
             <!-- TAB 3: ORDER -->
@@ -248,20 +249,19 @@
                 <button onclick="switchTab('wa')" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl">Lanjut ke Kirim WA >></button>
             </section>
 
-            <!-- TAB 4: WA & GAMBAR -->
+            <!-- TAB 4: WA & KIRIM -->
             <section id="tab-wa" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format WA</h3>
-                    <textarea id="wa-text" rows="10" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
+                    <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format Laporan WhatsApp</h3>
+                    <textarea id="wa-text" rows="12" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
                     
-                    <h3 class="font-bold text-xs flex justify-between items-center border-b pb-2 mt-4">
-                        <span class="flex items-center gap-1"><i data-lucide="image" class="w-4 h-4 text-blue-600"></i> Komposit Foto</span>
-                        <button onclick="generateImage()" class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded">Buat Gambar</button>
-                    </h3>
-                    <div id="canvas-output" class="min-h-[100px] border border-dashed flex items-center justify-center bg-slate-50 text-xs text-slate-400 p-2 rounded">Klik Buat Gambar</div>
-                    
-                    <button onclick="sendWA()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl mt-4 flex justify-center items-center gap-2 shadow">
-                        <i data-lucide="send" class="w-4 h-4"></i> Kirim ke WhatsApp
+                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
+                        <p class="font-bold mb-1">💡 Catatan Foto Timestamp:</p>
+                        <p class="text-[11px] text-slate-600">Semua foto audit di tab <strong>Audit</strong> sudah otomatis memiliki cap waktu (timestamp) & nama toko pada gambar tanpa digrid. Anda dapat menyimpan atau membagikannya satu per satu.</p>
+                    </div>
+
+                    <button onclick="sendWA()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl mt-2 flex justify-center items-center gap-2 shadow">
+                        <i data-lucide="send" class="w-4 h-4"></i> Salin Teks & Kirim ke WhatsApp
                     </button>
                 </div>
             </section>
@@ -361,7 +361,6 @@
         </div>
     </div>
 
-    <canvas id="collage-canvas" class="hidden"></canvas>
     <div id="toast" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
     <script>
@@ -596,6 +595,7 @@
             const opts = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
             const el = document.getElementById('audit-date');
             if(el) el.value = now.toLocaleDateString('id-ID', opts) + ' WIB';
+            updateReportText();
         }
 
         function saveState() {
@@ -635,11 +635,11 @@
                     visitNumber: document.getElementById('visit-number').value
                 }
             };
-            localStorage.setItem('aice_app_state_v4', JSON.stringify(state));
+            localStorage.setItem('aice_app_state_v5', JSON.stringify(state));
         }
 
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('aice_app_state_v4');
+            const saved = localStorage.getItem('aice_app_state_v5') || localStorage.getItem('aice_app_state_v4');
             if(saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -726,7 +726,7 @@
         }
 
         function backupData() {
-            const data = localStorage.getItem('aice_app_state_v4') || '{}';
+            const data = localStorage.getItem('aice_app_state_v5') || '{}';
             const blob = new Blob([data], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -745,7 +745,7 @@
             reader.onload = (evt) => {
                 try {
                     JSON.parse(evt.target.result);
-                    localStorage.setItem('aice_app_state_v4', evt.target.result);
+                    localStorage.setItem('aice_app_state_v5', evt.target.result);
                     loadFromLocalStorage();
                     renderDayButtons();
                     renderCustomers();
@@ -765,6 +765,7 @@
         function clearAppCache() {
             document.getElementById('data-dropdown').classList.add('hidden');
             openConfirmModal('Hapus Cache Aplikasi', 'Apakah Anda yakin ingin menghapus seluruh cache dan data tersimpan di perangkat ini?', () => {
+                localStorage.removeItem('aice_app_state_v5');
                 localStorage.removeItem('aice_app_state_v4');
                 stateHistory = [];
                 location.reload();
@@ -921,7 +922,7 @@
                 document.getElementById('freezer-id').value = '';
                 resetVisit();
                 orderQty = {}; photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
-                renderPhotoSlots(); renderMasterStock(); updateReportText(); document.getElementById('canvas-output').innerHTML = 'Klik Buat Gambar';
+                renderPhotoSlots(); renderMasterStock(); updateReportText();
                 saveToLocalStorage();
                 showToast('Form berhasil direset.');
             });
@@ -1045,33 +1046,71 @@
             let html = '';
             for(let i=1; i<=6; i++) {
                 let imgHtml = photos[i] ? `<img src="${photos[i]}" class="w-full h-full object-cover rounded-lg">` : `<div class="text-[10px] text-slate-400">Belum diunggah</div>`;
+                let btnSimpan = photos[i] ? `<a href="${photos[i]}" download="Aice_${i}_${Date.now()}.jpg" class="bg-blue-600 text-white text-[9px] py-1.5 px-2 rounded font-bold flex items-center justify-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Simpan</a>` : '';
                 html += `
-                <div class="border rounded p-2 bg-slate-50 text-center">
-                    <span class="text-[10px] font-bold block mb-1">${photoTitles[i-1]}</span>
-                    <div class="w-full h-24 bg-slate-200 rounded flex items-center justify-center mb-2 relative overflow-hidden">${imgHtml}</div>
+                <div class="border rounded p-2.5 bg-slate-50 text-center space-y-2">
+                    <span class="text-[11px] font-bold block text-slate-700">${photoTitles[i-1]}</span>
+                    <div class="w-full h-32 bg-slate-200 rounded flex items-center justify-center relative overflow-hidden shadow-inner">${imgHtml}</div>
                     <div class="flex gap-1">
                         <input type="file" id="cam-${i}" accept="image/*" capture="${i===2?'user':'environment'}" class="hidden" onchange="loadPhoto(${i}, event)">
                         <input type="file" id="gal-${i}" accept="image/*" class="hidden" onchange="loadPhoto(${i}, event)">
-                        <button onclick="document.getElementById('cam-${i}').click()" class="flex-1 bg-slate-800 text-white text-[9px] py-1.5 rounded">Kamera</button>
-                        <button onclick="document.getElementById('gal-${i}').click()" class="flex-1 bg-rose-600 text-white text-[9px] py-1.5 rounded">Galeri</button>
+                        <button onclick="document.getElementById('cam-${i}').click()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-[10px] py-1.5 rounded font-medium">Kamera</button>
+                        <button onclick="document.getElementById('gal-${i}').click()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-[10px] py-1.5 rounded font-medium">Galeri</button>
+                        ${btnSimpan}
                     </div>
                 </div>`;
             }
             document.getElementById('photo-slots-container').innerHTML = html;
+            lucide.createIcons();
         }
 
         function loadPhoto(idx, ev) {
             const file = ev.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = e => { 
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const maxWidth = 1080;
+                    let scale = maxWidth / img.width;
+                    if(scale > 1) scale = 1;
+                    
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    
+                    // Draw original photo
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Draw Timestamp Watermark Banner at bottom
+                    const bannerHeight = 90 * (canvas.width / 1080);
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+                    ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
+                    
+                    // Watermark text styling
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.font = `bold ${Math.round(24 * (canvas.width / 1080))}px Inter, sans-serif`;
+                    ctx.fillText(photoTitles[idx-1], 20, canvas.height - bannerHeight + 32);
+                    
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `${Math.round(18 * (canvas.width / 1080))}px Inter, sans-serif`;
+                    const storeName = document.getElementById('store-name').value || 'TOKO';
+                    const timeStr = document.getElementById('audit-date').value || new Date().toLocaleString('id-ID');
+                    ctx.fillText(`🏪 ${storeName} | 🕒 ${timeStr}`, 20, canvas.height - bannerHeight + 64);
+                    
+                    const stampedUrl = canvas.toDataURL('image/jpeg', 0.88);
+                    
                     saveState();
-                    photos[idx] = e.target.result; 
-                    renderPhotoSlots(); 
+                    photos[idx] = stampedUrl;
+                    renderPhotoSlots();
                     saveToLocalStorage();
+                    showToast(`Foto ${photoTitles[idx-1]} berhasil dimuat & diberi timestamp!`);
                 };
-                reader.readAsDataURL(file);
-            }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function changeOrder(sku, delta) {
@@ -1131,53 +1170,41 @@
                     const q = orderQty[p.sku];
                     const sub = q * p.price;
                     tDus += q; tHarga += sub;
-                    orderText += `- ${p.name} (${q} Dus)\n`;
+                    orderText += `${no++}. Kode ${p.sku} - ${p.name} = *${q} Dus* x Rp ${p.price.toLocaleString('id-ID')} = Rp ${sub.toLocaleString('id-ID')}\n`;
                 }
             });
-            if(tDus===0) orderText = '- (Tidak ada order)\n';
+            if(tDus===0) orderText = '*(Tidak ada tambahan order es krim)*\n';
 
-            const txt = `*LAPORAN AUDIT & ORDER AICE*
-📅 ${(document.getElementById('audit-day').value||'-').toUpperCase()} | ${document.getElementById('audit-date').value}
-🏪 *${(document.getElementById('store-name').value||'Toko').toUpperCase()}* (${(document.getElementById('store-code').value||'-').toUpperCase()})
-👤 Sales: ${(document.getElementById('staff-name').value||'-').toUpperCase()}
+            const txt = `*LAPORAN AUDIT FREEZER & ORDER ES KRIM AICE*
+===================================
+📅 Tanggal/Waktu : ${document.getElementById('audit-date').value}
+📍 Hari Kunjungan: ${(document.getElementById('audit-day').value||'-').toUpperCase()}
+📍 Kode Area     : ${(document.getElementById('area-code').value||'-').toUpperCase()}
+👤 Nama Sales    : ${(document.getElementById('staff-name').value||'-').toUpperCase()}
+🏪 Nama Toko     : ${(document.getElementById('store-name').value||'-').toUpperCase()}
+🆔 ID Toko/Freezer: ${(document.getElementById('store-code').value||'-').toUpperCase()} / ${(document.getElementById('freezer-id').value||'-').toUpperCase()}
+🚗 Kunjungan Ke  : ${document.getElementById('visit-number').value||'1'}
+===================================
 
-📦 *ORDERAN:*
-${orderText}
-*Total: ${tDus} Dus (Rp ${tHarga.toLocaleString('id-ID')})*
+📝 *CATATAN AUDIT:* Kondisi unit bersih & beroperasi baik.
+
+📦 *RINCIAN ORDERAN ES KRIM (NOTA):*
+-----------------------------------
+${orderText}-----------------------------------
+*TOTAL BOX ORDER  : ${tDus} Karton*
+*TOTAL TAGIHAN    : Rp ${tHarga.toLocaleString('id-ID')}*
+===================================
+_Laporan dibuat otomatis via Aice Digital System_
 _by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
         }
 
-        async function sendWA() {
-            showToast('Menyiapkan laporan & gambar WhatsApp...', 'info');
-            const cvs = await generateImage();
-            
-            cvs.toBlob(async (blob) => {
-                const file = new File([blob], 'Audit_Aice.jpg', {type: 'image/jpeg'});
-                const textWa = document.getElementById('wa-text').value;
-                
-                try {
-                    if (navigator.share) {
-                        await navigator.share({
-                            files: [file],
-                            title: 'Laporan Audit Aice',
-                            text: textWa
-                        });
-                        processPostSend();
-                    } else {
-                        throw new Error('NotSupported');
-                    }
-                } catch(e) {
-                    if (e.name !== 'AbortError') {
-                        const txtEnc = encodeURIComponent(textWa);
-                        window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
-                        processPostSend();
-                    } else {
-                        showToast('Pengiriman dibatalkan');
-                    }
-                }
-            }, 'image/jpeg', 0.85);
+        function sendWA() {
+            const textWa = document.getElementById('wa-text').value;
+            const txtEnc = encodeURIComponent(textWa);
+            window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
+            processPostSend();
         }
 
         function processPostSend() {
@@ -1196,76 +1223,6 @@ _by Maulani_`;
             updateReportText();
             saveToLocalStorage();
             showToast('Laporan terkirim! Stok dikurangi & kunjungan bertambah.');
-        }
-
-        function generateImage() {
-            return new Promise((resolve) => {
-                const cvs = document.getElementById('collage-canvas');
-                const ctx = cvs.getContext('2d');
-                cvs.width = 1200; cvs.height = 1800;
-
-                ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,1200,1800);
-                ctx.fillStyle = '#e11d48'; ctx.fillRect(0,0,1200,150);
-                
-                ctx.fillStyle = '#fff';
-                ctx.font = 'bold 36px Inter, sans-serif';
-                ctx.fillText(`AICE AUDIT [HARI: ${(document.getElementById('audit-day').value||'-').toUpperCase()}] - KE-${document.getElementById('visit-number').value}`, 40, 65);
-                ctx.font = '22px Inter, sans-serif';
-                ctx.fillText(`Toko: ${document.getElementById('store-name').value} | Sales: ${document.getElementById('staff-name').value} | ${document.getElementById('audit-date').value}`, 40, 115);
-
-                const slots = [
-                    {x:40, y:180, w:350, h:480, i:1}, {x:425, y:180, w:350, h:480, i:2}, {x:810, y:180, w:350, h:480, i:3},
-                    {x:40, y:690, w:350, h:480, i:4}, {x:425, y:690, w:350, h:480, i:5}, {x:810, y:690, w:350, h:480, i:6}
-                ];
-
-                let loaded = 0;
-                slots.forEach(s => {
-                    ctx.fillStyle = '#1e293b'; ctx.fillRect(s.x, s.y, s.w, s.h);
-                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.strokeRect(s.x, s.y, s.w, s.h);
-
-                    const src = photos[s.i];
-                    if(src) {
-                        const img = new Image();
-                        img.onload = () => {
-                            ctx.drawImage(img, s.x+10, s.y+10, s.w-20, s.h-60);
-                            drawLabel(ctx, s);
-                            loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
-                        };
-                        img.src = src;
-                    } else {
-                        ctx.fillStyle = '#94a3b8'; ctx.font = 'italic 18px Inter';
-                        ctx.fillText('Belum Diunggah', s.x + s.w/2 - 70, s.y + s.h/2);
-                        drawLabel(ctx, s);
-                        loaded++; if(loaded===6) { outputCanvas(); resolve(cvs); }
-                    }
-                });
-            });
-        }
-
-        function drawLabel(ctx, s) {
-            ctx.fillStyle = 'rgba(15,23,42,0.9)'; ctx.fillRect(s.x+10, s.y+s.h-50, s.w-20, 40);
-            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 20px Inter'; ctx.fillText(photoTitles[s.i-1], s.x+20, s.y+s.h-22);
-        }
-
-        function outputCanvas() {
-            const cvs = document.getElementById('collage-canvas');
-            const url = cvs.toDataURL('image/jpeg', 0.85);
-            document.getElementById('canvas-output').innerHTML = `
-                <div class="flex flex-col items-center">
-                    <img src="${url}" class="max-h-64 rounded border shadow mb-2">
-                    <div class="flex gap-2">
-                        <a href="${url}" download="Audit_Aice.jpg" class="bg-blue-600 text-white text-[10px] font-bold px-3 py-2 rounded">Simpan JPG</a>
-                        <button onclick="shareImage('${url}')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-2 rounded">Share Gambar WA</button>
-                    </div>
-                </div>`;
-        }
-
-        async function shareImage(url) {
-            try {
-                const blob = await (await fetch(url)).blob();
-                const file = new File([blob], 'Audit.jpg', {type: 'image/jpeg'});
-                if (navigator.share) await navigator.share({ files: [file], title: 'Laporan Audit' });
-            } catch(e) { showToast('Gunakan Simpan JPG'); }
         }
 
         function showToast(msg, type='info') {
