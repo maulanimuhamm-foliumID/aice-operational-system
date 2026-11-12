@@ -221,7 +221,7 @@
             <section id="tab-audit" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
                     <h3 class="font-bold text-xs border-b pb-2 mb-1 flex items-center gap-1"><i data-lucide="camera" class="w-4 h-4 text-rose-600"></i> Upload 6 Foto Audit (Otomatis Ada Timestamp)</h3>
-                    <p class="text-[10px] text-slate-500 mb-3">Foto berdiri sendiri (tanpa grid), lengkap dengan watermark tanggal & toko.</p>
+                    <p class="text-[10px] text-slate-500 mb-3">Foto berdiri sendiri, lengkap dengan watermark tanggal & toko. Klik tombol Simpan untuk mengunduh foto ke HP Anda.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div id="photo-slots-container" class="contents"></div>
                     </div>
@@ -255,14 +255,21 @@
                     <h3 class="font-bold text-xs flex items-center gap-1 border-b pb-2"><i data-lucide="message-square" class="w-4 h-4 text-emerald-600"></i> Format Laporan WhatsApp</h3>
                     <textarea id="wa-text" rows="12" readonly class="w-full font-mono text-[10px] bg-slate-50 border rounded p-2 outline-none"></textarea>
                     
-                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
-                        <p class="font-bold mb-1">💡 Catatan Foto Timestamp:</p>
-                        <p class="text-[11px] text-slate-600">Semua foto audit di tab <strong>Audit</strong> sudah otomatis memiliki cap waktu (timestamp) & nama toko pada gambar tanpa digrid. Anda dapat menyimpan atau membagikannya satu per satu.</p>
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-900 space-y-1">
+                        <p class="font-bold flex items-center gap-1"><i data-lucide="info" class="w-4 h-4"></i> Petunjuk Pengiriman Foto ke WhatsApp:</p>
+                        <p class="text-[11px] text-slate-700">1. Pastikan Anda sudah menekan tombol <strong>Simpan</strong> pada foto-foto audit di tab <strong>Audit</strong>.</p>
+                        <p class="text-[11px] text-slate-700">2. Klik tombol <strong>Kirim Laporan Teks ke WhatsApp</strong> di bawah.</p>
+                        <p class="text-[11px] text-slate-700">3. Setelah WhatsApp terbuka dan teks terkirim, lampirkan (attach) foto-foto bernilai timestamp dari galeri HP Anda.</p>
                     </div>
 
-                    <button onclick="sendWA()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl mt-2 flex justify-center items-center gap-2 shadow">
-                        <i data-lucide="send" class="w-4 h-4"></i> Salin Teks & Kirim ke WhatsApp
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="downloadAllPhotos()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 shadow text-xs">
+                            <i data-lucide="download" class="w-4 h-4"></i> Simpan Semua Foto
+                        </button>
+                        <button onclick="sendWA()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 shadow text-xs">
+                            <i data-lucide="send" class="w-4 h-4"></i> Kirim Teks ke WA
+                        </button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -364,7 +371,7 @@
     <div id="toast" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
     <script>
-        // PASSWORD UTAMA (Dapat diganti jika ada karyawan keluar)
+        // PASSWORD UTAMA
         const PASSWORD_RAHASIA = "Aice2026";
 
         function handleLogin(e) {
@@ -1198,6 +1205,24 @@ _Laporan dibuat otomatis via Aice Digital System_
 _by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
+        }
+
+        function downloadAllPhotos() {
+            let count = 0;
+            for(let i=1; i<=6; i++) {
+                if(photos[i]) {
+                    const a = document.createElement('a');
+                    a.href = photos[i];
+                    a.download = `Aice_Foto_${i}_${Date.now()}.jpg`;
+                    a.click();
+                    count++;
+                }
+            }
+            if(count > 0) {
+                showToast(`Berhasil mengunduh ${count} foto ber-timestamp!`);
+            } else {
+                showToast('Belum ada foto yang diunggah!', 'error');
+            }
         }
 
         function sendWA() {
