@@ -1393,18 +1393,27 @@
             });
             if(tDus===0) orderText = '- (Tidak ada order es krim)\n';
 
-            // Hitung akumulasi total order bulan ini untuk toko terkait
+            // Hitung akumulasi total order bulan ini (minggu-minggu sebelumnya + order minggu ini)
             const storeCode = (document.getElementById('store-code')?.value || '').toUpperCase();
-            const storeName = (document.getElementById('store-name')?.value || '').toUpperCase();
+            const weekNum = parseInt(document.getElementById('week-number')?.value) || 1;
+            
             let monthDus = tDus;
             let monthRp = tHarga;
-            
-            if(storeCode && manualStoreWeeks[storeCode]) {
-                // Tambahkan dari input manual jika ada
+
+            if(storeCode) {
+                if(!manualStoreWeeks[storeCode]) {
+                    manualStoreWeeks[storeCode] = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+                }
                 let wObj = manualStoreWeeks[storeCode];
-                let sumManualDus = (wObj[1]||0) + (wObj[2]||0) + (wObj[3]||0) + (wObj[4]||0) + (wObj[5]||0);
-                monthDus = Math.max(monthDus, sumManualDus);
-                monthRp = monthDus * 95000; // Estimasi rata-rata
+                let sumOtherWeeks = 0;
+                for(let w=1; w<=5; w++) {
+                    if(w !== weekNum) {
+                        sumOtherWeeks += (wObj[w] || 0);
+                    }
+                }
+                monthDus = sumOtherWeeks + tDus;
+                let avgPrice = tDus > 0 ? (tHarga / tDus) : 95000;
+                monthRp = monthDus * avgPrice;
             }
 
             const salesName = (document.getElementById('staff-name')?.value || '-').toUpperCase();
@@ -1422,7 +1431,7 @@
 📦 *ORDERAN:*
 ${orderText}
 *Total: ${tDus} Dus (Rp ${tHarga.toLocaleString('id-ID')})*
-Total Order Bulan Ini : *${monthDus} Dus (Rp ${monthRp.toLocaleString('id-ID')})*
+Total Order Bulan Ini : *${monthDus} Dus (Rp ${Math.round(monthRp).toLocaleString('id-ID')})*
 _by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
