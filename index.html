@@ -86,7 +86,7 @@
                     </div>
                     <div>
                         <h2 class="font-bold text-sm text-slate-800">Menu Laporan Rekapan</h2>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Rekap Toko & Omzet Sales (Minggu, Bulan, Quarter, Tahun)</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Rekap Toko, Omzet Sales, & Setoran Harian Admin</p>
                     </div>
                 </button>
             </div>
@@ -318,6 +318,9 @@
                     </div>
                 </div>
                 <div class="flex gap-1">
+                    <button onclick="loadDemoData()" class="text-[10px] bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1" title="Muat Data Contoh">
+                        <i data-lucide="database" class="w-3.5 h-3.5"></i> Data Contoh
+                    </button>
                     <button onclick="clearHistory()" class="text-[10px] bg-rose-800 hover:bg-rose-900 text-white px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1" title="Reset Data Rekap">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Reset Rekap
                     </button>
@@ -332,7 +335,7 @@
                     <i data-lucide="store" class="w-4 h-4"></i> 1. Rekap Toko (Store Level)
                 </button>
                 <button onclick="switchReportSubMenu('omzet-sales')" id="btn-sub-sales" class="flex-1 py-2.5 px-3 rounded-lg transition text-slate-600 flex items-center justify-center gap-1.5">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i> 2. Omzet Sales (Team Level)
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> 2. Omzet Sales & Harian Admin
                 </button>
             </div>
 
@@ -376,7 +379,7 @@
                 <div id="report-store-container" class="space-y-3"></div>
             </section>
 
-            <!-- SUB-MENU 2: OMZET SALES -->
+            <!-- SUB-MENU 2: OMZET SALES & HARIAN ADMIN -->
             <section id="sub-menu-sales" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
@@ -400,24 +403,32 @@
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">
                             <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                 <span class="font-bold text-blue-800 block">Minggu 1</span>
-                                <span id="agg-w1" class="text-slate-800 font-bold block mt-1">0 Dus</span>
+                                <span id="agg-w1" class="text-slate-800 font-bold block mt-1">0 Box</span>
                             </div>
                             <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                 <span class="font-bold text-blue-800 block">Minggu 2</span>
-                                <span id="agg-w2" class="text-slate-800 font-bold block mt-1">0 Dus</span>
+                                <span id="agg-w2" class="text-slate-800 font-bold block mt-1">0 Box</span>
                             </div>
                             <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                 <span class="font-bold text-blue-800 block">Minggu 3</span>
-                                <span id="agg-w3" class="text-slate-800 font-bold block mt-1">0 Dus</span>
+                                <span id="agg-w3" class="text-slate-800 font-bold block mt-1">0 Box</span>
                             </div>
                             <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                 <span class="font-bold text-blue-800 block">Minggu 4</span>
-                                <span id="agg-w4" class="text-slate-800 font-bold block mt-1">0 Dus</span>
+                                <span id="agg-w4" class="text-slate-800 font-bold block mt-1">0 Box</span>
                             </div>
                             <div class="bg-blue-50 p-2 rounded-lg border border-blue-200">
                                 <span class="font-bold text-blue-800 block">Minggu 5</span>
-                                <span id="agg-w5" class="text-slate-800 font-bold block mt-1">0 Dus</span>
+                                <span id="agg-w5" class="text-slate-800 font-bold block mt-1">0 Box</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Rekap Omzet Harian (Senin - Sabtu) -->
+                    <div class="space-y-2 pt-2 border-t">
+                        <span class="text-xs font-bold text-slate-700 block">Rekap Omzet Harian (Senin - Sabtu):</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs" id="daily-omzet-grid">
+                            <!-- Injected via JS -->
                         </div>
                     </div>
 
@@ -427,19 +438,19 @@
                         <div class="grid grid-cols-2 gap-2 text-xs">
                             <div class="bg-slate-50 p-3 rounded-xl border flex justify-between items-center">
                                 <span class="font-medium text-slate-600">Quarter 1 (Jan-Mar)</span>
-                                <span id="q1-val" class="font-bold text-slate-800">Rp 0</span>
+                                <span id="q1-val" class="font-bold text-slate-800">0 Box</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border flex justify-between items-center">
                                 <span class="font-medium text-slate-600">Quarter 2 (Apr-Jun)</span>
-                                <span id="q2-val" class="font-bold text-slate-800">Rp 0</span>
+                                <span id="q2-val" class="font-bold text-slate-800">0 Box</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border flex justify-between items-center">
                                 <span class="font-medium text-slate-600">Quarter 3 (Jul-Sep)</span>
-                                <span id="q3-val" class="font-bold text-slate-800">Rp 0</span>
+                                <span id="q3-val" class="font-bold text-slate-800">0 Box</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border flex justify-between items-center">
                                 <span class="font-medium text-slate-600">Quarter 4 (Okt-Des)</span>
-                                <span id="q4-val" class="font-bold text-slate-800">Rp 0</span>
+                                <span id="q4-val" class="font-bold text-slate-800">0 Box</span>
                             </div>
                         </div>
                     </div>
@@ -447,11 +458,38 @@
                     <!-- Total Omzet 1 Tahun -->
                     <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 rounded-xl shadow flex justify-between items-center">
                         <div>
-                            <span class="text-[10px] text-indigo-100 uppercase tracking-wider block font-semibold">Total Omzet 1 Tahun (<span id="label-year">2026</span>)</span>
-                            <span id="annual-total-val" class="text-lg font-bold">Rp 0</span>
+                            <span class="text-[10px] text-indigo-100 uppercase tracking-wider block font-semibold">Total Order 1 Tahun (<span id="label-year">2026</span>)</span>
+                            <span id="annual-total-val" class="text-lg font-bold">0 Box</span>
                         </div>
                         <button onclick="sendSalesOmzetWA()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl shadow flex items-center gap-1.5 transition">
                             <i data-lucide="send" class="w-4 h-4"></i> Kirim Laporan Omzet WA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FITUR BARU: REKAPITULASI OMZET HARIAN (LAPORAN SETORAN ADMIN) -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3">
+                        <div>
+                            <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1"><i data-lucide="clipboard-list" class="w-4 h-4 text-emerald-600"></i> Rekapitulasi Omzet Harian (Laporan Setoran Admin)</h3>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Pilih hari untuk melihat rincian toko yang order pada hari tersebut.</p>
+                        </div>
+                        <div class="flex items-center gap-1.5" id="admin-day-selector">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <div id="admin-daily-report-content" class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar pr-1">
+                        <!-- Injected via JS -->
+                    </div>
+
+                    <div class="border-t pt-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <div class="text-xs">
+                            <span class="text-slate-500">Grand Total Hari Ini:</span>
+                            <span id="admin-grand-total" class="font-bold text-slate-800 ml-1">0 Box (Rp 0)</span>
+                        </div>
+                        <button onclick="sendAdminDailyReportWA()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center justify-center gap-1.5 transition">
+                            <i data-lucide="send" class="w-4 h-4"></i> Kirim Rekap Harian ke Admin via WA
                         </button>
                     </div>
                 </div>
@@ -765,6 +803,7 @@
         let photos = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null};
         let currentDayFilter = 'SENIN';
         let reportDayFilter = 'SENIN';
+        let adminReportDay = 'SABTU';
         let manualStoreWeeks = {}; // { storeCode: { 1: dus, 2: dus, 3: dus, 4: dus, 5: dus } }
         let stateHistory = [];
         const photoTitles = ['1. ID Freezer / QR', '2. Selfie Karyawan', '3. Sebelum Dibersihkan', '4. Setelah Dibersihkan', '5. Tata Letak', '6. Foto Nota'];
@@ -775,7 +814,7 @@
             lucide.createIcons();
             loadFromLocalStorage();
             if(Object.keys(masterStock).length === 0) {
-                products.forEach(p => masterStock[p.sku] = 0);
+                products.forEach(p => masterStock[p.sku] = 50);
             }
             updateDate();
             renderPhotoSlots();
@@ -810,6 +849,7 @@
                 customers: JSON.parse(JSON.stringify(customers)),
                 availableDays: [...availableDays],
                 currentDayFilter: currentDayFilter,
+                manualStoreWeeks: JSON.parse(JSON.stringify(manualStoreWeeks)),
                 form: {
                     auditDay: document.getElementById('audit-day')?.value || '',
                     areaCode: document.getElementById('area-code')?.value || '',
@@ -873,6 +913,26 @@
             }
         }
 
+        function loadDemoData() {
+            openConfirmModal('Muat Data Contoh', 'Apakah Anda ingin memuat data contoh order untuk menguji rekapitulasi?', () => {
+                saveState();
+                // Seed some demo orders into manualStoreWeeks
+                customers.forEach((c, idx) => {
+                    let w1 = (idx % 3 === 0) ? 5 : (idx % 2 === 0 ? 3 : 0);
+                    let w2 = (idx % 4 === 0) ? 4 : 2;
+                    let w3 = (idx % 5 === 0) ? 6 : 0;
+                    let w4 = (idx % 2 === 0) ? 3 : 1;
+                    let w5 = 0;
+                    if(w1 > 0 || w2 > 0 || w3 > 0 || w4 > 0) {
+                        manualStoreWeeks[c.code] = { 1: w1, 2: w2, 3: w3, 4: w4, 5: w5 };
+                    }
+                });
+                saveToLocalStorage();
+                initReportScreen();
+                showToast('Data contoh berhasil dimuat!');
+            });
+        }
+
         function updateUndoButton() {
             const btn = document.getElementById('btn-undo');
             if(!btn) return;
@@ -897,6 +957,7 @@
             customers = prev.customers;
             availableDays = prev.availableDays;
             currentDayFilter = prev.currentDayFilter;
+            manualStoreWeeks = prev.manualStoreWeeks;
             
             document.getElementById('audit-day').value = prev.form.auditDay;
             document.getElementById('area-code').value = prev.form.areaCode;
@@ -978,7 +1039,6 @@
             document.getElementById('data-dropdown').classList.add('hidden');
             openConfirmModal('Hapus Cache Aplikasi', 'Apakah Anda yakin ingin menghapus seluruh cache dan data tersimpan di perangkat ini?', () => {
                 localStorage.removeItem('aice_app_state_v9');
-                localStorage.removeItem('aice_order_history_v1');
                 stateHistory = [];
                 location.reload();
             });
@@ -1393,7 +1453,6 @@
             });
             if(tDus===0) orderText = '- (Tidak ada order es krim)\n';
 
-            // Hitung akumulasi total order bulan ini (minggu-minggu sebelumnya + order minggu ini)
             const storeCode = (document.getElementById('store-code')?.value || '').toUpperCase();
             const weekNum = parseInt(document.getElementById('week-number')?.value) || 1;
             
@@ -1432,7 +1491,7 @@
 ${orderText}
 *Total: ${tDus} Dus (Rp ${tHarga.toLocaleString('id-ID')})*
 Total Order Bulan Ini : *${monthDus} Dus (Rp ${Math.round(monthRp).toLocaleString('id-ID')})*
-_Pesan ini di kirim otomatis via apporder by foliumtechid_`;
+_by Maulani_`;
             const el = document.getElementById('wa-text');
             if(el) el.value = txt;
         }
@@ -1441,7 +1500,6 @@ _Pesan ini di kirim otomatis via apporder by foliumtechid_`;
             showToast('Menyiapkan laporan & foto tanpa grid...', 'info');
             const textWa = document.getElementById('wa-text').value;
             
-            // Rekam juga ke manualStoreWeeks untuk minggu berjalan
             recordCurrentOrderToManualWeeks();
 
             let filesArray = [];
@@ -1545,6 +1603,7 @@ _Pesan ini di kirim otomatis via apporder by foliumtechid_`;
                 secSales.classList.remove('hidden');
                 secToko.classList.add('hidden');
                 renderOmzetSalesData();
+                renderAdminDailyReport();
             }
             lucide.createIcons();
         }
@@ -1598,13 +1657,13 @@ _Pesan ini di kirim otomatis via apporder by foliumtechid_`;
                         </div>
                         <div class="text-right">
                             <span class="text-[10px] text-slate-400 block">Total Bulanan</span>
-                            <span class="font-bold text-xs text-rose-600">${totalDus} Dus (Rp ${totalRp.toLocaleString('id-ID')})</span>
+                            <span class="font-bold text-xs text-rose-600">${totalDus} Box (Rp ${totalRp.toLocaleString('id-ID')})</span>
                         </div>
                     </div>
 
                     <!-- Input Manual Minggu 1 - 5 -->
                     <div>
-                        <span class="text-[10px] font-bold text-slate-600 block mb-1">Input / Edit Order (Dus) Minggu 1 - 5:</span>
+                        <span class="text-[10px] font-bold text-slate-600 block mb-1">Input / Edit Order (Box) Minggu 1 - 5:</span>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">
                             <div class="bg-slate-50 p-1 rounded border">
                                 <span class="font-medium text-slate-500 block mb-0.5">Mg 1</span>
@@ -1669,11 +1728,11 @@ _Pesan ini di kirim otomatis via apporder by foliumtechid_`;
 📍 Desa: ${cust.village} | Freezer: ${cust.freezer}
 
 📌 *Rincian Order Mingguan:*
-- Minggu 1: *${wObj[1]||0} Dus*
-- Minggu 2: *${wObj[2]||0} Dus*
-- Minggu 3: *${wObj[3]||0} Dus*
-- Minggu 4: *${wObj[4]||0} Dus*
-- Minggu 5: *${wObj[5]||0} Dus*
+- Minggu 1: *${wObj[1]||0} Box*
+- Minggu 2: *${wObj[2]||0} Box*
+- Minggu 3: *${wObj[3]||0} Box*
+- Minggu 4: *${wObj[4]||0} Box*
+- Minggu 5: *${wObj[5]||0} Box*
 
 📦 *Total Order Bulanan:* *${tDus} Box (Dus)*
 💰 *Total Omzet Bulanan:* Rp ${tRp.toLocaleString('id-ID')}
@@ -1684,7 +1743,7 @@ _by Maulani_`;
             showToast('Draf WA Rekap Toko disiapkan!');
         }
 
-        // SUB-MENU 2: OMZET SALES
+        // SUB-MENU 2: OMZET SALES & HARIAN ADMIN
         function renderOmzetSalesData() {
             let sumW1 = 0, sumW2 = 0, sumW3 = 0, sumW4 = 0, sumW5 = 0;
             
@@ -1705,6 +1764,33 @@ _by Maulani_`;
             document.getElementById('agg-w4').innerText = sumW4 + ' Box';
             document.getElementById('agg-w5').innerText = sumW5 + ' Box';
 
+            // Hitung rekap harian (Senin - Sabtu)
+            let dailyBoxes = { 'SENIN': 0, 'SELASA': 0, 'RABU': 0, 'KAMIS': 0, 'JUMAT': 0, 'SABTU': 0 };
+            customers.forEach(cust => {
+                if(manualStoreWeeks[cust.code]) {
+                    let w = manualStoreWeeks[cust.code];
+                    let dSum = (w[1]||0) + (w[2]||0) + (w[3]||0) + (w[4]||0) + (w[5]||0);
+                    if(dailyBoxes[cust.area] !== undefined) {
+                        dailyBoxes[cust.area] += dSum;
+                    }
+                }
+            });
+
+            let dailyGridHtml = '';
+            ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'].forEach(day => {
+                let box = dailyBoxes[day];
+                let rp = box * 95000;
+                dailyGridHtml += `
+                <div class="bg-slate-50 p-2.5 rounded-xl border flex flex-col justify-between">
+                    <span class="font-bold text-slate-700">${day}</span>
+                    <div class="mt-1">
+                        <span class="font-bold text-rose-600 block">${box} Box</span>
+                        <span class="text-[10px] text-slate-500">Rp ${rp.toLocaleString('id-ID')}</span>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('daily-omzet-grid').innerHTML = dailyGridHtml;
+
             // Quarters in Box (Dus)
             const q1Dus = Math.round(totalAnnualDus * 0.25);
             const q2Dus = Math.round(totalAnnualDus * 0.25);
@@ -1721,6 +1807,101 @@ _by Maulani_`;
             document.getElementById('annual-total-val').innerText = totalAnnualDus + ' Box';
         }
 
+        // FITUR BARU: RENDER REKAPITULASI OMZET HARIAN (LAPORAN SETORAN ADMIN)
+        function renderAdminDailyReport() {
+            // Render day selector buttons
+            let dayBtnsHtml = '';
+            ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'].forEach(day => {
+                const active = (adminReportDay === day);
+                const cls = active ? 'bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg text-[11px] shadow' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg text-[11px]';
+                dayBtnsHtml += `<button onclick="setAdminReportDay('${day}')" class="${cls}">${day}</button>`;
+            });
+            document.getElementById('admin-day-selector').innerHTML = dayBtnsHtml;
+
+            // Filter customers for adminReportDay
+            let targetCustomers = customers.filter(c => c.area === adminReportDay);
+            let contentHtml = '';
+            let grandTotalBox = 0;
+            let grandTotalRp = 0;
+            let orderingCount = 0;
+
+            targetCustomers.forEach((cust, index) => {
+                let wObj = manualStoreWeeks[cust.code] || { 1:0, 2:0, 3:0, 4:0, 5:0 };
+                let storeBox = (wObj[1]||0) + (wObj[2]||0) + (wObj[3]||0) + (wObj[4]||0) + (wObj[5]||0);
+                if(storeBox > 0) {
+                    orderingCount++;
+                    let storeRp = storeBox * 95000;
+                    grandTotalBox += storeBox;
+                    grandTotalRp += storeRp;
+
+                    contentHtml += `
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 border rounded-xl text-xs">
+                        <div>
+                            <div class="font-bold text-slate-800">${index+1}. ${cust.code} - ${cust.name}</div>
+                            <div class="text-[10px] text-slate-500">Desa: ${cust.village} | Freezer: ${cust.freezer}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-rose-600 block">${storeBox} Box</span>
+                            <span class="text-[10px] text-slate-500">Rp ${storeRp.toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            if(contentHtml === '') {
+                contentHtml = '<div class="text-center text-xs text-slate-400 py-6">Belum ada toko yang tercatat order pada hari ' + adminReportDay + '.</div>';
+            }
+
+            document.getElementById('admin-daily-report-content').innerHTML = contentHtml;
+            document.getElementById('admin-grand-total').innerText = `${grandTotalBox} Box (Rp ${grandTotalRp.toLocaleString('id-ID')})`;
+        }
+
+        function setAdminReportDay(day) {
+            adminReportDay = day;
+            renderAdminDailyReport();
+        }
+
+        function sendAdminDailyReportWA() {
+            let targetCustomers = customers.filter(c => c.area === adminReportDay);
+            let rincianTxt = '';
+            let grandTotalBox = 0;
+            let grandTotalRp = 0;
+            let no = 1;
+
+            targetCustomers.forEach(cust => {
+                let wObj = manualStoreWeeks[cust.code] || { 1:0, 2:0, 3:0, 4:0, 5:0 };
+                let storeBox = (wObj[1]||0) + (wObj[2]||0) + (wObj[3]||0) + (wObj[4]||0) + (wObj[5]||0);
+                if(storeBox > 0) {
+                    let storeRp = storeBox * 95000;
+                    grandTotalBox += storeBox;
+                    grandTotalRp += storeRp;
+                    rincianTxt += `${no++}. ${cust.name} (${cust.code}) - *${storeBox} Box* (Rp ${storeRp.toLocaleString('id-ID')})\n`;
+                }
+            });
+
+            if(rincianTxt === '') {
+                return showToast('Tidak ada data order untuk dikirim pada hari ' + adminReportDay, 'error');
+            }
+
+            const salesName = (document.getElementById('staff-name')?.value || 'MAULANI').toUpperCase();
+            const areaCode = (document.getElementById('area-code')?.value || 'KUDUS-01').toUpperCase();
+
+            const text = `📋 *LAPORAN SETORAN HARIAN ADMIN*
+📅 Hari: ${adminReportDay}
+👤 Sales: ${salesName} | ${areaCode}
+
+📌 *Rincian Toko Order (${adminReportDay}):*
+${rincianTxt}
+📦 *TOTAL KESELURUHAN HARI ${adminReportDay}:*
+- Total Box: *${grandTotalBox} Box*
+- Total Omzet: *Rp ${grandTotalRp.toLocaleString('id-ID')}*
+_by Maulani_`;
+
+            const txtEnc = encodeURIComponent(text);
+            window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
+            showToast('Draf WA Setoran Harian Admin disiapkan!');
+        }
+
         function sendSalesOmzetWA() {
             let sumW1 = 0, sumW2 = 0, sumW3 = 0, sumW4 = 0, sumW5 = 0;
             Object.keys(manualStoreWeeks).forEach(code => {
@@ -1732,7 +1913,6 @@ _by Maulani_`;
             const salesName = (document.getElementById('staff-name')?.value || 'MAULANI').toUpperCase();
             const areaCode = (document.getElementById('area-code')?.value || 'KUDUS-01').toUpperCase();
 
-            // Hitung rekap harian (Senin - Sabtu) berdasarkan area toko
             let dailyBoxes = { 'SENIN': 0, 'SELASA': 0, 'RABU': 0, 'KAMIS': 0, 'JUMAT': 0, 'SABTU': 0 };
             customers.forEach(cust => {
                 if(manualStoreWeeks[cust.code]) {
@@ -1754,12 +1934,12 @@ _by Maulani_`;
 📅 Tahun: ${year}
 
 📌 *Rekap Omzet Harian (Senin - Sabtu):*
-- Senin: *${dailyBoxes['SENIN']} Box*
-- Selasa: *${dailyBoxes['SELASA']} Box*
-- Rabu: *${dailyBoxes['RABU']} Box*
-- Kamis: *${dailyBoxes['KAMIS']} Box*
-- Jumat: *${dailyBoxes['JUMAT']} Box*
-- Sabtu: *${dailyBoxes['SABTU']} Box*
+- Senin: *${dailyBoxes['SENIN']} Box* (Rp ${(dailyBoxes['SENIN']*95000).toLocaleString('id-ID')})
+- Selasa: *${dailyBoxes['SELASA']} Box* (Rp ${(dailyBoxes['SELASA']*95000).toLocaleString('id-ID')})
+- Rabu: *${dailyBoxes['RABU']} Box* (Rp ${(dailyBoxes['RABU']*95000).toLocaleString('id-ID')})
+- Kamis: *${dailyBoxes['KAMIS']} Box* (Rp ${(dailyBoxes['KAMIS']*95000).toLocaleString('id-ID')})
+- Jumat: *${dailyBoxes['JUMAT']} Box* (Rp ${(dailyBoxes['JUMAT']*95000).toLocaleString('id-ID')})
+- Sabtu: *${dailyBoxes['SABTU']} Box* (Rp ${(dailyBoxes['SABTU']*95000).toLocaleString('id-ID')})
 
 📌 *Total Rekap Order Mingguan (Gabungan):*
 - Minggu 1: *${sumW1} Box*
@@ -1787,6 +1967,8 @@ _by Maulani_`;
                 manualStoreWeeks = {};
                 saveToLocalStorage();
                 renderReportStoreData();
+                renderOmzetSalesData();
+                renderAdminDailyReport();
                 showToast('Data rekap berhasil direset.');
             });
         }
