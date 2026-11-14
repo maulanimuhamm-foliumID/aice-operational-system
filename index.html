@@ -1379,22 +1379,25 @@
             });
             if(tDus===0) orderText = '- (Tidak ada order es krim)\n';
 
-            // Hitung akumulasi total bulan ini dari rekap toko jika toko dipilih
+            // Hitung akumulasi total bulan ini dengan benar tanpa double count
             const storeCode = document.getElementById('store-code')?.value.toUpperCase();
             const weekNum = parseInt(document.getElementById('week-number')?.value) || 1;
-            let cumulativeDus = tDus;
-            let cumulativeRp = tHarga;
+            let cumulativeDus = 0;
+            let cumulativeRp = 0;
 
             if (storeCode && manualStoreWeeks[storeCode]) {
                 for (let w = 1; w <= 5; w++) {
-                    if (w !== weekNum) {
+                    if (w === weekNum) {
+                        cumulativeDus += tDus;
+                        cumulativeRp += tHarga;
+                    } else {
                         cumulativeDus += (manualStoreWeeks[storeCode][w]?.dus || 0);
                         cumulativeRp += (manualStoreWeeks[storeCode][w]?.rp || 0);
                     }
                 }
-                // tambahkan order minggu ini yang sedang aktif
-                cumulativeDus += tDus;
-                cumulativeRp += tHarga;
+            } else {
+                cumulativeDus = tDus;
+                cumulativeRp = tHarga;
             }
 
             const salesName = (document.getElementById('staff-name')?.value || '-').toUpperCase();
