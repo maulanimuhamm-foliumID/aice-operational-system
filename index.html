@@ -86,7 +86,7 @@
                     </div>
                     <div>
                         <h2 class="font-bold text-sm text-slate-800">Menu Laporan Rekapan</h2>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Rekap Toko, Omzet Sales, & Setoran Admin</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Rekap Toko, Bulanan, Tahunan, & Setoran Admin</p>
                     </div>
                 </button>
             </div>
@@ -101,7 +101,6 @@
 
     <!-- 1. SCREEN OPERASIONAL APP -->
     <div id="screen-operasional" class="hidden pb-24 md:pb-8">
-        <!-- Header -->
         <header class="bg-gradient-to-r from-rose-600 to-red-700 text-white shadow-md sticky top-0 z-30 px-4 py-3">
             <div class="max-w-3xl mx-auto flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -114,13 +113,11 @@
                     </div>
                 </div>
                 
-                <!-- Header Action Buttons -->
                 <div class="flex items-center gap-1.5">
                     <button onclick="undoAction()" id="btn-undo" disabled class="text-xs bg-rose-800/40 text-rose-300 px-2 py-1.5 rounded-lg flex items-center gap-1 transition opacity-50 cursor-not-allowed">
                         <i data-lucide="undo-2" class="w-3.5 h-3.5"></i> Undo
                     </button>
 
-                    <!-- Menu Data Dropdown -->
                     <div class="relative">
                         <button onclick="toggleDataMenu()" class="text-xs bg-rose-800 hover:bg-rose-900 text-rose-100 px-2 py-1.5 rounded-lg flex items-center gap-1 transition">
                             <i data-lucide="database" class="w-3.5 h-3.5"></i> Data <i data-lucide="chevron-down" class="w-3 h-3"></i>
@@ -141,7 +138,6 @@
         </header>
 
         <main class="max-w-3xl mx-auto p-4 space-y-4">
-            <!-- Form Informasi -->
             <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
                 <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-2">
                     <i data-lucide="store" class="w-4 h-4 text-rose-600"></i> Informasi Audit & Toko
@@ -206,7 +202,6 @@
                 </div>
             </section>
 
-            <!-- Kelompok Master -->
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Master</h2>
             <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
                 <button onclick="switchTab('pelanggan')" id="btn-tab-pelanggan" class="flex-1 py-2.5 px-2 rounded-lg transition bg-blue-600 text-white flex items-center justify-center gap-1 whitespace-nowrap shadow">
@@ -217,7 +212,6 @@
                 </button>
             </div>
 
-            <!-- Kelompok Pesanan -->
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mt-2">Kelompok Pesanan</h2>
             <div class="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex text-[11px] font-semibold overflow-x-auto gap-1">
                 <button onclick="switchTab('audit')" id="btn-tab-audit" class="flex-1 py-2.5 px-2 rounded-lg transition text-slate-600 flex items-center justify-center gap-1 whitespace-nowrap">
@@ -253,7 +247,7 @@
             <section id="tab-stock" class="space-y-4 hidden">
                 <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
                     <div class="flex justify-between items-center border-b pb-2 mb-3">
-                        <h3 class="font-bold text-xs flex items-center gap-1"><i data-lucide="boxes" class="w-4 h-4 text-blue-600"></i> Master Stok & Harga Varian</h3>
+                        <h3 class="font-bold text-xs flex items-center gap-1"><i data-lucide="boxes" class="w-4 h-4 text-blue-600"></i> Master Stok & Harga Nota Aice</h3>
                         <div class="flex gap-1">
                             <button onclick="openAddVariantModal()" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded font-bold">+ Varian Baru</button>
                             <button onclick="resetMasterStock()" class="text-[10px] bg-rose-100 text-rose-700 px-2 py-1 rounded font-bold">Reset 0</button>
@@ -325,7 +319,7 @@
                     </button>
                     <div>
                         <h1 class="font-bold text-base leading-tight">Menu Laporan Rekapan</h1>
-                        <p class="text-[10px] text-blue-100">Rekap Toko & Omzet Sales</p>
+                        <p class="text-[10px] text-blue-100">Rekap Toko, Bulanan, Tahunan & Setoran Admin</p>
                     </div>
                 </div>
                 <div class="flex gap-1">
@@ -346,7 +340,7 @@
                     <i data-lucide="store" class="w-4 h-4"></i> Rekap Toko
                 </button>
                 <button onclick="switchReportSubMenu('omzet')" id="btn-sub-omzet" class="flex-1 py-2.5 px-3 rounded-lg transition text-slate-600 flex items-center justify-center gap-1">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i> Omzet Sales & Harian Admin
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> Bulanan, Tahunan & Admin
                 </button>
             </div>
 
@@ -374,52 +368,110 @@
                 <div id="report-store-container" class="space-y-3"></div>
             </div>
 
-            <!-- SUB-MENU 2: OMZET SALES & HARIAN ADMIN -->
+            <!-- SUB-MENU 2: BULANAN, TAHUNAN & ADMIN (HIERARCHICAL) -->
             <div id="sub-menu-omzet" class="space-y-4 hidden">
-                <!-- Filter Tahun untuk Omzet -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold text-xs text-slate-800">Tahun Laporan Omzet Sales</h3>
-                        <p class="text-[10px] text-slate-500">Akumulasi seluruh toko & rute</p>
+                
+                <!-- 1. KARTU LAPORAN BULANAN (TERDIRI DARI HARIAN & MINGGUAN + TOP SKU) -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-2">
+                        <div>
+                            <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i> Rekapitulasi Bulanan (Harian, Mingguan & Top SKU)</h3>
+                            <p class="text-[10px] text-slate-500">Akumulasi transaksi dari harian ➔ mingguan dalam 1 bulan penuh</p>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <select id="monthly-summary-month" onchange="renderOmzetSalesData()" class="text-xs border rounded-lg p-1.5 bg-slate-50 font-medium outline-none">
+                                <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
+                                <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
+                                <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
+                                <option value="Oktober">Oktober</option><option value="November" selected>November</option><option value="Desember">Desember</option>
+                            </select>
+                            <button onclick="sendMonthlySummaryWA()" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow whitespace-nowrap">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim WA Bulanan
+                            </button>
+                        </div>
                     </div>
-                    <select id="omzet-year" onchange="renderOmzetSalesData()" class="text-xs border rounded-lg px-3 py-1.5 bg-slate-50 font-bold outline-none">
-                        <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
-                    </select>
+
+                    <!-- Total Ringkasan Bulan Ini -->
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded border">
+                            <span class="text-[10px] text-slate-500 block">Total Toko Order</span>
+                            <span id="monthly-total-stores" class="font-bold text-slate-800 text-sm">0 Toko</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded border">
+                            <span class="text-[10px] text-slate-500 block">Total Box Terjual</span>
+                            <span id="monthly-total-box" class="font-bold text-blue-600 text-sm">0 Box</span>
+                        </div>
+                        <div class="col-span-2 bg-blue-50 border border-blue-200 p-3 rounded-xl flex justify-between items-center">
+                            <span class="font-bold text-blue-900 text-xs">Total Omzet Bulan Ini:</span>
+                            <span id="monthly-total-rp" class="font-bold text-rose-600 text-sm">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Mingguan (W1 - W5) -->
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Rincian Mingguan (Minggu 1 s.d. 5):</span>
+                        <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]" id="monthly-weekly-grid"></div>
+                    </div>
+
+                    <!-- Breakdown Harian (Senin - Sabtu) -->
+                    <div class="border-t pt-3">
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Akumulasi Harian (Senin - Sabtu):</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs" id="monthly-daily-grid"></div>
+                    </div>
+
+                    <!-- Top SKU Varian Terlaris 1 Bulan -->
+                    <div class="border-t pt-3 space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-700 block">🏆 Varian Terlaris (Top SKU Bulan Ini):</span>
+                        <div id="monthly-sku-summary" class="space-y-1 max-h-48 overflow-y-auto custom-scrollbar pr-1 text-[10px]">
+                            <span class="text-slate-400 italic">Belum ada data transaksi</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Kartu Rekap Omzet Sales -->
+                <!-- 2. KARTU LAPORAN TAHUNAN & OMZET SALES (TERDIRI DARI BULANAN + TOP SKU TAHUNAN) -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
                     <div class="flex justify-between items-center border-b pb-2">
-                        <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1"><i data-lucide="bar-chart-2" class="w-4 h-4 text-indigo-600"></i> Rekapitulasi Omzet Karyawan Sales</h3>
-                        <button onclick="sendSalesOmzetWA()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow">
-                            <i data-lucide="send" class="w-3 h-3"></i> Kirim WA Omzet
-                        </button>
+                        <div>
+                            <h3 class="font-bold text-xs text-slate-800 flex items-center gap-1"><i data-lucide="bar-chart-2" class="w-4 h-4 text-indigo-600"></i> Rekapitulasi Tahunan (Bulanan Jan-Des & Top SKU)</h3>
+                            <p class="text-[10px] text-slate-500">Akumulasi dari rekap bulanan ➔ tahunan penuh</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="omzet-year" onchange="renderOmzetSalesData()" class="text-xs border rounded-lg px-2 py-1 bg-slate-50 font-bold outline-none">
+                                <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+                            </select>
+                            <button onclick="sendSalesOmzetWA()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow">
+                                <i data-lucide="send" class="w-3 h-3"></i> Kirim WA Tahunan
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Total Box Mingguan Gabungan -->
+                    <!-- Breakdown Bulanan (Januari - Desember) -->
                     <div>
-                        <span class="text-[11px] font-bold text-slate-600 block mb-2">Total Box Mingguan (Gabungan Seluruh Toko):</span>
-                        <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]" id="sales-weekly-box-grid"></div>
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Rincian Per Bulan (Januari - Desember):</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs" id="annual-monthly-grid"></div>
                     </div>
 
-                    <!-- Omzet Harian (Senin - Sabtu) -->
-                    <div class="border-t pt-3">
-                        <span class="text-[11px] font-bold text-slate-600 block mb-2">Rekap Omzet Harian (Senin - Sabtu):</span>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs" id="sales-daily-omzet-grid"></div>
-                    </div>
-
-                    <!-- Quarter & Annual -->
+                    <!-- Quarter & Annual Total -->
                     <div class="border-t pt-3 space-y-2 text-xs">
-                        <span class="text-[11px] font-bold text-slate-600 block">Rekap Omzet Quarter & 1 Tahun:</span>
+                        <span class="text-[11px] font-bold text-slate-600 block">Rekap Omzet Quarter:</span>
                         <div class="grid grid-cols-2 gap-2" id="sales-quarter-grid"></div>
+                        
                         <div class="bg-indigo-50 border border-indigo-200 p-3 rounded-xl flex justify-between items-center font-bold text-indigo-900">
                             <span>Total Omzet 1 Tahun (<span id="txt-current-year">2026</span>):</span>
                             <span id="sales-annual-total">Rp 0</span>
                         </div>
                     </div>
+
+                    <!-- Top SKU 1 Tahun -->
+                    <div class="border-t pt-3 space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-700 block">⭐ Varian Terlaris (Top SKU 1 Tahun):</span>
+                        <div id="annual-sku-summary" class="space-y-1 max-h-48 overflow-y-auto custom-scrollbar pr-1 text-[10px]">
+                            <span class="text-slate-400 italic">Belum ada data transaksi</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- FITUR BARU: LAPORAN SETORAN HARIAN ADMIN -->
+                <!-- 3. LAPORAN SETORAN HARIAN ADMIN -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
                     <div class="flex justify-between items-center border-b pb-2">
                         <div>
@@ -553,7 +605,7 @@
                 }
                 checkAuth();
             } else {
-                showToast('Password salah! Silakan hubungi admin.', 'error');
+                showToast('Password salah!', 'error');
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();
             }
@@ -607,22 +659,24 @@
             lucide.createIcons();
         }
 
+        // OFFICIAL AICE PRODUCTS & PRICES
         let products = [
-            {sku: '116', name: 'Milk Melon', price: 95000}, {sku: '453', name: 'Nanas/Semangka', price: 77500},
-            {sku: '119', name: 'Mango Slush', price: 90500}, {sku: '411', name: 'Mochi Vanilla/Mochi Durian', price: 92500},
-            {sku: '414', name: 'Mochi Coklat', price: 93500}, {sku: '475', name: 'Mochi Klepon/Mochi Mango', price: 94500},
-            {sku: '515', name: 'Mochi Peach/Mochi Banana', price: 92500}, {sku: '455', name: 'Miki-miki/Miki Double Choco', price: 96000},
+            {sku: '116', name: 'Milk Melon', price: 95000}, {sku: '453/454', name: 'Nanas/Semangka', price: 77500},
+            {sku: '119', name: 'Mango Slush', price: 90500}, {sku: '411/413', name: 'Mochi Vanilla/Mochi Durian', price: 92500},
+            {sku: '414', name: 'Mochi Coklat', price: 93500}, {sku: '475/535', name: 'Mochi Klepon/Mochi Mango', price: 94500},
+            {sku: '515/514', name: 'Mochi Peach/Mochi Banana', price: 92500}, {sku: '455/508', name: 'Miki-miki/Miki Double Choco', price: 96000},
             {sku: '457', name: 'Sweet Corn', price: 96000}, {sku: '130', name: 'Taro Crispy', price: 126400},
             {sku: '521', name: 'Fruitty Rolls', price: 124800}, {sku: '452', name: 'Bingo', price: 97000},
             {sku: '553', name: 'Goyang Lidah Mango', price: 115600}, {sku: '552', name: 'Vanilla Berry Cone', price: 115200},
-            {sku: '469', name: 'Sundae Coklat/Sundae Stroberry', price: 97000}, {sku: '512', name: 'Strawberry Cone/Chocomelt Cone', price: 97500},
-            {sku: '456', name: 'Coffee Crispy/Strawberry Crispy', price: 126400}, {sku: '111', name: 'Jeruk', price: 78000},
+            {sku: '469/470', name: 'Sundae Coklat/Sundae Stroberry', price: 97000}, {sku: '512/448', name: 'Strawberry Cone/Chocomelt Cone', price: 97500},
+            {sku: '456/129', name: 'Coffee Crispy/Strawberry Crispy', price: 126400}, {sku: '111', name: 'Jeruk', price: 78000},
             {sku: '120', name: 'Choco Crispy (30)', price: 117000}, {sku: '494', name: 'Fruizzy Blueberry Yoghurt', price: 96000},
             {sku: '126', name: '2 Colors', price: 92000}, {sku: '500', name: 'Fruizzy Grape Fruits', price: 80000},
-            {sku: '497', name: 'Choco Malt Stick', price: 80000}, {sku: '520', name: 'Crispy Balls/Cookie & Cream', price: 118500},
+            {sku: '497', name: 'Choco Malt Stick', price: 80000}, {sku: '520/545', name: 'Crispy Balls/Cookie & Cream', price: 118500},
             {sku: '555', name: 'CB Shine Muscat', price: 118500}, {sku: '556', name: 'Ria-Ria Bingo', price: 115400}
         ];
 
+        // 130+ MASTER CUSTOMERS DATA
         let customers = [
             { area: 'SENIN', code: 'D0712', freezer: 'IDNR2020407811', name: 'HALIMAH', village: 'BANYUMENENG', phone: '085100089837' },
             { area: 'SENIN', code: 'D0755', freezer: 'IDNR2022402163', name: 'MAHARANI 7', village: 'BANYUMENENG', phone: '082137914828' },
@@ -1608,18 +1662,35 @@ _by Maulani_`;
         function normalizeStoreWeekData(code) {
             if(!manualStoreWeeks[code]) {
                 manualStoreWeeks[code] = {
-                    1: {dus: 0, rp: 0}, 2: {dus: 0, rp: 0}, 3: {dus: 0, rp: 0}, 4: {dus: 0, rp: 0}, 5: {dus: 0, rp: 0}
+                    1: {dus: 0, rp: 0}, 2: {dus: 0, rp: 0}, 3: {dus: 0, rp: 0}, 4: {dus: 0, rp: 0}, 5: {dus: 0, rp: 0},
+                    activeWeek: 1
                 };
+            }
+            if(!manualStoreWeeks[code].activeWeek) {
+                manualStoreWeeks[code].activeWeek = 1;
             }
         }
 
-        function updateManualStoreWeek(code, week, field, val) {
+        function updateManualStoreWeek(code, week, val) {
             normalizeStoreWeekData(code);
-            const num = parseFloat(val) || 0;
-            manualStoreWeeks[code][week][field] = num;
+            const dusNum = parseFloat(val) || 0;
+            const avgPrice = 95000; // Estimated standard price per box for manual entry
+            const rpNum = dusNum * avgPrice;
+            manualStoreWeeks[code][week].dus = dusNum;
+            manualStoreWeeks[code][week].rp = rpNum;
             saveToLocalStorage();
             renderReportStoreData();
             renderOmzetSalesData();
+        }
+
+        function switchStoreWeekDetail(code, weekNum) {
+            normalizeStoreWeekData(code);
+            manualStoreWeeks[code].activeWeek = weekNum;
+            renderReportStoreData();
+            setTimeout(() => {
+                const el = document.getElementById(`store-detail-${code}`);
+                if(el) el.classList.remove('hidden');
+            }, 10);
         }
 
         function renderReportStoreData() {
@@ -1648,17 +1719,15 @@ _by Maulani_`;
                     monthlyRp += (wData[w]?.rp || 0);
                 }
 
-                let hasVariantDetails = false;
-                let variantSummaryHtml = '';
-                for(let w=1; w<=5; w++) {
-                    if(wData[w]?.items && Object.keys(wData[w].items).length > 0) {
-                        hasVariantDetails = true;
-                        variantSummaryHtml += `<div class="text-[10px] font-semibold text-blue-700 mt-1">Minggu ${w}:</div>`;
-                        for(let sku in wData[w].items) {
-                            let itm = wData[w].items[sku];
-                            variantSummaryHtml += `<div class="text-[9px] text-slate-600 pl-2">- ${itm.name} (${sku}): ${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</div>`;
-                        }
+                let activeWeekTab = wData.activeWeek || 1;
+                let weekItemsHtml = '';
+                if(wData[activeWeekTab]?.items && Object.keys(wData[activeWeekTab].items).length > 0) {
+                    for(let sku in wData[activeWeekTab].items) {
+                        let itm = wData[activeWeekTab].items[sku];
+                        weekItemsHtml += `<div class="text-[10px] text-slate-700 pl-2 py-1 border-b border-slate-100 flex justify-between"><span>- ${itm.name} (${sku})</span> <span class="font-bold text-slate-900">${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</span></div>`;
                     }
+                } else {
+                    weekItemsHtml = `<div class="text-[10px] text-slate-400 italic py-3 text-center">Tidak ada rincian varian terperinci tercatat di Minggu ${activeWeekTab} (atau diinput sebagai rekap total box).</div>`;
                 }
 
                 html += `
@@ -1667,7 +1736,7 @@ _by Maulani_`;
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-1.5 py-0.5 rounded">${cust.area}</span>
-                                <span class="font-bold text-slate-800 text-xs cursor-pointer hover:text-blue-600" onclick="toggleStoreDetail('${cust.code}')">${cust.code} - ${cust.name} 🔍</span>
+                                <span class="font-bold text-slate-800 text-xs cursor-pointer hover:text-blue-600" onclick="toggleStoreDetail('${cust.code}')">${cust.code} - ${cust.name} 🔍 (Klik Detail)</span>
                             </div>
                             <div class="text-[10px] text-slate-500 mt-0.5">Freezer: ${cust.freezer} | Desa: ${cust.village} | Periode: ${month} ${year}</div>
                         </div>
@@ -1683,24 +1752,38 @@ _by Maulani_`;
                     </div>
 
                     <div>
-                        <span class="text-[10px] font-bold text-slate-600 block mb-1">Input / Edit Order per Minggu (Dus & Rp):</span>
+                        <span class="text-[10px] font-bold text-slate-600 block mb-1">Input / Edit Order per Minggu (Box):</span>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">
                             ${[1,2,3,4,5].map(w => `
                                 <div class="bg-slate-50 p-1.5 rounded border space-y-1">
                                     <span class="font-bold text-slate-600 block">Mgg ${w}</span>
-                                    <input type="number" min="0" value="${wData[w].dus || 0}" onchange="updateManualStoreWeek('${cust.code}', ${w}, 'dus', this.value)" class="w-full text-center border rounded p-0.5 text-xs font-bold text-slate-800 bg-white" placeholder="Dus">
-                                    <input type="number" min="0" value="${wData[w].rp || 0}" onchange="updateManualStoreWeek('${cust.code}', ${w}, 'rp', this.value)" class="w-full text-center border rounded p-0.5 text-[9px] text-rose-600 bg-white" placeholder="Rupiah">
+                                    <input type="number" min="0" value="${wData[w].dus || 0}" onchange="updateManualStoreWeek('${cust.code}', ${w}, this.value)" class="w-full text-center border rounded p-1 text-xs font-bold text-slate-800 bg-white" placeholder="Box">
                                 </div>
                             `).join('')}
                         </div>
                     </div>
 
-                    <div id="store-detail-${cust.code}" class="hidden bg-slate-50 border p-2.5 rounded-lg space-y-1 mt-2">
-                        <div class="text-[11px] font-bold text-slate-800 border-b pb-1 flex justify-between">
-                            <span>Rincian Varian per Minggu (Minggu 1 - 5):</span>
-                            <span class="text-[9px] text-slate-500 italic">*Dari order otomatis / manual</span>
+                    <div id="store-detail-${cust.code}" class="hidden bg-slate-50 border p-3 rounded-lg space-y-2.5 mt-2">
+                        <div class="text-[11px] font-bold text-slate-800 border-b pb-1 flex justify-between items-center">
+                            <span>Rincian Omzet & Varian per Minggu:</span>
+                            <span class="text-[9px] text-rose-600 font-bold">Total: Rp ${Math.round(monthlyRp).toLocaleString('id-ID')}</span>
                         </div>
-                        ${hasVariantDetails ? variantSummaryHtml : '<div class="text-[10px] text-slate-400 italic py-1">Belum ada rincian varian terperinci (atau diinput sebagai rekap total manual).</div>'}
+                        
+                        <div class="flex gap-1">
+                            ${[1,2,3,4,5].map(w => `
+                                <button onclick="switchStoreWeekDetail('${cust.code}', ${w})" class="flex-1 py-1 text-[10px] font-bold rounded ${activeWeekTab === w ? 'bg-blue-600 text-white shadow' : 'bg-white border text-slate-700 hover:bg-slate-100'}">Mgg ${w}</button>
+                            `).join('')}
+                        </div>
+
+                        <div class="bg-white p-2.5 rounded border space-y-1">
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-800 border-b pb-1">
+                                <span>Rincian Minggu ${activeWeekTab}:</span>
+                                <span class="text-rose-600">${wData[activeWeekTab]?.dus || 0} Box (Rp ${Math.round(wData[activeWeekTab]?.rp || 0).toLocaleString('id-ID')})</span>
+                            </div>
+                            <div class="max-h-40 overflow-y-auto custom-scrollbar space-y-1 pr-1">
+                                ${weekItemsHtml}
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             });
@@ -1748,119 +1831,305 @@ _by Maulani_`;
             showToast('Draf WA Rekap Toko disiapkan!');
         }
 
+        // HIERARCHICAL REPORT RENDERER (Monthly, Weekly, Daily, Annual + Top SKUs)
         function renderOmzetSalesData() {
             const year = document.getElementById('omzet-year').value;
+            const selectedMonth = document.getElementById('monthly-summary-month')?.value || 'November';
             document.getElementById('txt-current-year').innerText = year;
 
-            let totalW = { 1:{dus:0,rp:0}, 2:{dus:0,rp:0}, 3:{dus:0,rp:0}, 4:{dus:0,rp:0}, 5:{dus:0,rp:0} };
-            let dailyBox = { 'SENIN':0, 'SELASA':0, 'RABU':0, 'KAMIS':0, 'JUMAT':0, 'SABTU':0 };
-            let annualRp = 0;
+            let logs = JSON.parse(localStorage.getItem('aice_transaction_logs_v1') || '[]');
+            
+            // 1. MONTHLY CALCULATIONS (Harian ➔ Mingguan ➔ Bulanan + Top SKU)
+            let monthlyStoresSet = new Set();
+            let monthlyTotalBox = 0;
+            let monthlyTotalRp = 0;
+            let monthlyWeekly = { 1:{dus:0,rp:0}, 2:{dus:0,rp:0}, 3:{dus:0,rp:0}, 4:{dus:0,rp:0}, 5:{dus:0,rp:0} };
+            let monthlyDaily = { 'SENIN':0, 'SELASA':0, 'RABU':0, 'KAMIS':0, 'JUMAT':0, 'SABTU':0 };
+            let monthlySkuMap = {};
 
-            customers.forEach(c => {
-                if(manualStoreWeeks[c.code]) {
-                    for(let w=1; w<=5; w++) {
-                        let d = manualStoreWeeks[c.code][w]?.dus || 0;
-                        let r = manualStoreWeeks[c.code][w]?.rp || 0;
-                        totalW[w].dus += d;
-                        totalW[w].rp += r;
-                        annualRp += r;
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const targetMonthIdx = monthNames.indexOf(selectedMonth);
 
-                        if(dailyBox[c.area] !== undefined) {
-                            dailyBox[c.area] += d;
+            logs.forEach(log => {
+                let d = new Date(log.id);
+                if(d.getFullYear() == parseInt(year) && d.getMonth() === targetMonthIdx) {
+                    monthlyStoresSet.add(log.storeCode);
+                    monthlyTotalBox += log.totalBox;
+                    monthlyTotalRp += log.totalRp;
+                    let w = log.weekNum || 1;
+                    if(monthlyWeekly[w]) {
+                        monthlyWeekly[w].dus += log.totalBox;
+                        monthlyWeekly[w].rp += log.totalRp;
+                    }
+                    if(monthlyDaily[log.auditDay] !== undefined) {
+                        monthlyDaily[log.auditDay] += log.totalBox;
+                    }
+                    if(log.items) {
+                        for(let sku in log.items) {
+                            if(!monthlySkuMap[sku]) monthlySkuMap[sku] = { name: log.items[sku].name, qty: 0, subtotal: 0 };
+                            monthlySkuMap[sku].qty += log.items[sku].qty;
+                            monthlySkuMap[sku].subtotal += log.items[sku].subtotal;
                         }
                     }
                 }
             });
 
-            let boxGridHtml = '';
+            if(monthlyTotalBox === 0) {
+                customers.forEach(c => {
+                    if(manualStoreWeeks[c.code]) {
+                        let hasOrd = false;
+                        for(let w=1; w<=5; w++) {
+                            let d = manualStoreWeeks[c.code][w]?.dus || 0;
+                            let r = manualStoreWeeks[c.code][w]?.rp || 0;
+                            if(d > 0) {
+                                hasOrd = true;
+                                monthlyTotalBox += d;
+                                monthlyTotalRp += r;
+                                monthlyWeekly[w].dus += d;
+                                monthlyWeekly[w].rp += r;
+                                if(monthlyDaily[c.area] !== undefined) monthlyDaily[c.area] += d;
+
+                                if(manualStoreWeeks[c.code][w]?.items) {
+                                    let items = manualStoreWeeks[c.code][w].items;
+                                    for(let sku in items) {
+                                        if(!monthlySkuMap[sku]) monthlySkuMap[sku] = { name: items[sku].name, qty: 0, subtotal: 0 };
+                                        monthlySkuMap[sku].qty += items[sku].qty;
+                                        monthlySkuMap[sku].subtotal += items[sku].subtotal;
+                                    }
+                                }
+                            }
+                        }
+                        if(hasOrd) monthlyStoresSet.add(c.code);
+                    }
+                });
+            }
+
+            document.getElementById('monthly-total-stores').innerText = monthlyStoresSet.size + ' Toko';
+            document.getElementById('monthly-total-box').innerText = monthlyTotalBox + ' Box';
+            document.getElementById('monthly-total-rp').innerText = 'Rp ' + Math.round(monthlyTotalRp).toLocaleString('id-ID');
+
+            let weeklyGridHtml = '';
             for(let w=1; w<=5; w++) {
-                boxGridHtml += `
+                weeklyGridHtml += `
                 <div class="bg-slate-50 p-2 rounded border">
-                    <span class="font-bold text-slate-500 block">Minggu ${w}</span>
-                    <span class="text-slate-800 font-bold text-xs">${totalW[w].dus} Dus</span>
+                    <span class="font-bold text-slate-500 block">Mgg ${w}</span>
+                    <span class="text-slate-800 font-bold text-xs">${monthlyWeekly[w].dus} Box</span>
                 </div>`;
             }
-            document.getElementById('sales-weekly-box-grid').innerHTML = boxGridHtml;
+            document.getElementById('monthly-weekly-grid').innerHTML = weeklyGridHtml;
 
-            let dailyGridHtml = '';
+            let monthlyDailyHtml = '';
             ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'].forEach(day => {
-                let b = dailyBox[day] || 0;
-                dailyGridHtml += `
+                let b = monthlyDaily[day] || 0;
+                monthlyDailyHtml += `
                 <div class="bg-slate-50 p-2 rounded border flex justify-between items-center">
                     <span class="font-medium text-slate-600">${day}</span>
-                    <span class="font-bold text-indigo-600">${b} Box</span>
+                    <span class="font-bold text-blue-600">${b} Box</span>
                 </div>`;
             });
-            document.getElementById('sales-daily-omzet-grid').innerHTML = dailyGridHtml;
+            document.getElementById('monthly-daily-grid').innerHTML = monthlyDailyHtml;
 
-            let q1 = (totalW[1].rp + totalW[2].rp) * 0.5;
-            let q2 = (totalW[2].rp + totalW[3].rp) * 0.5;
-            let q3 = (totalW[3].rp + totalW[4].rp) * 0.5;
-            let q4 = annualRp - (q1 + q2 + q3);
-            if(q4 < 0) q4 = annualRp;
+            let monthlySkuHtml = '';
+            let sortedMonthlySkus = Object.keys(monthlySkuMap).sort((a,b) => monthlySkuMap[b].qty - monthlySkuMap[a].qty);
+            sortedMonthlySkus.forEach((sku, idx) => {
+                let itm = monthlySkuMap[sku];
+                monthlySkuHtml += `<div class="flex justify-between items-center p-1.5 bg-slate-50 rounded border text-[10px]"><span><b>#${idx+1}</b> ${itm.name} (${sku})</span> <span class="font-bold text-blue-700">${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</span></div>`;
+            });
+            if(monthlySkuHtml === '') monthlySkuHtml = '<div class="text-slate-400 italic text-center py-2">Belum ada rincian varian untuk bulan ' + selectedMonth + '</div>';
+            document.getElementById('monthly-sku-summary').innerHTML = monthlySkuHtml;
 
-            document.getElementById('sales-quarter-grid').innerHTML = `
-                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Quarter 1 (Jan-Mar)</span><span class="font-bold">Rp ${Math.round(q1).toLocaleString('id-ID')}</span></div>
-                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Quarter 2 (Apr-Jun)</span><span class="font-bold">Rp ${Math.round(q2).toLocaleString('id-ID')}</span></div>
-                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Quarter 3 (Jul-Sep)</span><span class="font-bold">Rp ${Math.round(q3).toLocaleString('id-ID')}</span></div>
-                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Quarter 4 (Okt-Des)</span><span class="font-bold">Rp ${Math.round(q4).toLocaleString('id-ID')}</span></div>
-            `;
-            document.getElementById('sales-annual-total').innerText = 'Rp ' + Math.round(annualRp).toLocaleString('id-ID');
-        }
+            // 2. ANNUAL CALCULATIONS (Bulanan Jan-Des ➔ Tahunan + Top SKU Tahunan)
+            let annualTotalRp = 0;
+            let annualMonthlyRp = new Array(12).fill(0);
+            let annualMonthlyBox = new Array(12).fill(0);
+            let annualSkuMap = {};
 
-        function sendSalesOmzetWA() {
-            let totalW = { 1:0, 2:0, 3:0, 4:0, 5:0 };
-            let dailyBox = { 'SENIN':0, 'SELASA':0, 'RABU':0, 'KAMIS':0, 'JUMAT':0, 'SABTU':0 };
-            let annualRp = 0;
-
-            customers.forEach(c => {
-                if(manualStoreWeeks[c.code]) {
-                    for(let w=1; w<=5; w++) {
-                        let d = manualStoreWeeks[c.code][w]?.dus || 0;
-                        let r = manualStoreWeeks[c.code][w]?.rp || 0;
-                        totalW[w] += d;
-                        annualRp += r;
-                        if(dailyBox[c.area] !== undefined) dailyBox[c.area] += d;
+            logs.forEach(log => {
+                let d = new Date(log.id);
+                if(d.getFullYear() == parseInt(year)) {
+                    let mIdx = d.getMonth();
+                    annualMonthlyRp[mIdx] += log.totalRp;
+                    annualMonthlyBox[mIdx] += log.totalBox;
+                    annualTotalRp += log.totalRp;
+                    if(log.items) {
+                        for(let sku in log.items) {
+                            if(!annualSkuMap[sku]) annualSkuMap[sku] = { name: log.items[sku].name, qty: 0, subtotal: 0 };
+                            annualSkuMap[sku].qty += log.items[sku].qty;
+                            annualSkuMap[sku].subtotal += log.items[sku].subtotal;
+                        }
                     }
                 }
             });
 
-            let q1 = annualRp * 0.2; let q2 = annualRp * 0.2; let q3 = annualRp * 0.2; let q4 = annualRp * 0.4;
-            const year = document.getElementById('omzet-year').value;
+            if(annualTotalRp === 0) {
+                customers.forEach(c => {
+                    if(manualStoreWeeks[c.code]) {
+                        for(let w=1; w<=5; w++) {
+                            let r = manualStoreWeeks[c.code][w]?.rp || 0;
+                            let d = manualStoreWeeks[c.code][w]?.dus || 0;
+                            annualTotalRp += r;
+                            annualMonthlyRp[targetMonthIdx] += r;
+                            annualMonthlyBox[targetMonthIdx] += d;
+                            if(manualStoreWeeks[c.code][w]?.items) {
+                                let items = manualStoreWeeks[c.code][w].items;
+                                for(let sku in items) {
+                                    if(!annualSkuMap[sku]) annualSkuMap[sku] = { name: items[sku].name, qty: 0, subtotal: 0 };
+                                    annualSkuMap[sku].qty += items[sku].qty;
+                                    annualSkuMap[sku].subtotal += items[sku].subtotal;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            let annualMonthlyGridHtml = '';
+            monthNames.forEach((mName, idx) => {
+                let rpVal = annualMonthlyRp[idx] || 0;
+                let boxVal = annualMonthlyBox[idx] || 0;
+                annualMonthlyGridHtml += `
+                <div class="bg-slate-50 p-2 rounded border">
+                    <span class="font-bold text-slate-600 block">${mName}</span>
+                    <span class="text-indigo-600 font-bold text-xs">${boxVal} Box</span>
+                    <span class="text-[10px] text-slate-500 block">Rp ${Math.round(rpVal).toLocaleString('id-ID')}</span>
+                </div>`;
+            });
+            document.getElementById('annual-monthly-grid').innerHTML = annualMonthlyGridHtml;
+
+            let q1 = annualMonthlyRp[0] + annualMonthlyRp[1] + annualMonthlyRp[2];
+            let q2 = annualMonthlyRp[3] + annualMonthlyRp[4] + annualMonthlyRp[5];
+            let q3 = annualMonthlyRp[6] + annualMonthlyRp[7] + annualMonthlyRp[8];
+            let q4 = annualMonthlyRp[9] + annualMonthlyRp[10] + annualMonthlyRp[11];
+
+            document.getElementById('sales-quarter-grid').innerHTML = `
+                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Q1 (Jan-Mar)</span><span class="font-bold">Rp ${Math.round(q1).toLocaleString('id-ID')}</span></div>
+                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Q2 (Apr-Jun)</span><span class="font-bold">Rp ${Math.round(q2).toLocaleString('id-ID')}</span></div>
+                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Q3 (Jul-Sep)</span><span class="font-bold">Rp ${Math.round(q3).toLocaleString('id-ID')}</span></div>
+                <div class="bg-slate-50 p-2 rounded border flex justify-between"><span class="text-slate-500">Q4 (Okt-Des)</span><span class="font-bold">Rp ${Math.round(q4).toLocaleString('id-ID')}</span></div>
+            `;
+            document.getElementById('sales-annual-total').innerText = 'Rp ' + Math.round(annualTotalRp).toLocaleString('id-ID');
+
+            let annualSkuHtml = '';
+            let sortedAnnualSkus = Object.keys(annualSkuMap).sort((a,b) => annualSkuMap[b].qty - annualSkuMap[a].qty);
+            sortedAnnualSkus.forEach((sku, idx) => {
+                let itm = annualSkuMap[sku];
+                annualSkuHtml += `<div class="flex justify-between items-center p-1.5 bg-slate-50 rounded border text-[10px]"><span><b>#${idx+1}</b> ${itm.name} (${sku})</span> <span class="font-bold text-indigo-700">${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</span></div>`;
+            });
+            if(annualSkuHtml === '') annualSkuHtml = '<div class="text-slate-400 italic text-center py-2">Belum ada rincian varian tahun ' + year + '</div>';
+            document.getElementById('annual-sku-summary').innerHTML = annualSkuHtml;
+        }
+
+        function sendMonthlySummaryWA() {
+            const selectedMonth = document.getElementById('monthly-summary-month')?.value || 'November';
+            const year = document.getElementById('omzet-year')?.value || '2026';
             const salesName = (document.getElementById('staff-name')?.value || 'MAULANI').toUpperCase();
             const areaCode = (document.getElementById('area-code')?.value || 'KUDUS-01').toUpperCase();
 
-            const text = `📈 *LAPORAN OMZET SALES & TIM AICE*
-📅 Tahun: ${year}
+            let logs = JSON.parse(localStorage.getItem('aice_transaction_logs_v1') || '[]');
+            let monthlyStoresSet = new Set();
+            let monthlyTotalBox = 0;
+            let monthlyTotalRp = 0;
+            let monthlySkuMap = {};
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const targetMonthIdx = monthNames.indexOf(selectedMonth);
+
+            logs.forEach(log => {
+                let d = new Date(log.id);
+                if(d.getFullYear() == parseInt(year) && d.getMonth() === targetMonthIdx) {
+                    monthlyStoresSet.add(log.storeCode);
+                    monthlyTotalBox += log.totalBox;
+                    monthlyTotalRp += log.totalRp;
+                    if(log.items) {
+                        for(let sku in log.items) {
+                            if(!monthlySkuMap[sku]) monthlySkuMap[sku] = { name: log.items[sku].name, qty: 0, subtotal: 0 };
+                            monthlySkuMap[sku].qty += log.items[sku].qty;
+                            monthlySkuMap[sku].subtotal += log.items[sku].subtotal;
+                        }
+                    }
+                }
+            });
+
+            let skuTxt = '';
+            let sortedSkus = Object.keys(monthlySkuMap).sort((a,b) => monthlySkuMap[b].qty - monthlySkuMap[a].qty);
+            sortedSkus.forEach((sku, idx) => {
+                let itm = monthlySkuMap[sku];
+                skuTxt += `${idx+1}. ${itm.name}: *${itm.qty} Dus* (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})\n`;
+            });
+            if(skuTxt === '') skuTxt = '- (Belum ada rincian varian)\n';
+
+            const text = `🏆 *LAPORAN REKAP BULANAN AICE*
+📅 Periode: ${selectedMonth.toUpperCase()} ${year}
 👤 Sales: ${salesName} | ${areaCode}
 
-📌 *Rekap Total Box Mingguan:*
-- Minggu 1: ${totalW[1]} Box
-- Minggu 2: ${totalW[2]} Box
-- Minggu 3: ${totalW[3]} Box
-- Minggu 4: ${totalW[4]} Box
-- Minggu 5: ${totalW[5]} Box
+📌 *Ringkasan Bulan Ini:*
+- Toko Order: ${monthlyStoresSet.size} Toko
+- Total Box Terjual: *${monthlyTotalBox} Box*
+- Total Omzet Bulanan: *Rp ${Math.round(monthlyTotalRp).toLocaleString('id-ID')}*
 
-📌 *Rekap Omzet Harian (Box):*
-- Senin: *${dailyBox['SENIN']} Box*
-- Selasa: *${dailyBox['SELASA']} Box*
-- Rabu: *${dailyBox['RABU']} Box*
-- Kamis: *${dailyBox['KAMIS']} Box*
-- Jumat: *${dailyBox['JUMAT']} Box*
-- Sabtu: *${dailyBox['SABTU']} Box*
-
-📈 *Rekap Omzet Quarter:*
-- Quarter 1 (Jan-Mar): Rp ${Math.round(q1).toLocaleString('id-ID')}
-- Quarter 2 (Apr-Jun): Rp ${Math.round(q2).toLocaleString('id-ID')}
-- Quarter 3 (Jul-Sep): Rp ${Math.round(q3).toLocaleString('id-ID')}
-- Quarter 4 (Okt-Des): Rp ${Math.round(q4).toLocaleString('id-ID')}
-
-🏆 *Total Omzet 1 Tahun (${year}):* *Rp ${Math.round(annualRp).toLocaleString('id-ID')}*
+📦 *Top Varian Terjual (1 Bulan):*
+${skuTxt}
 _by Maulani_`;
 
             const txtEnc = encodeURIComponent(text);
             window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
-            showToast('Draf WA Omzet Sales disiapkan!');
+            showToast('Draf WA Rekap Bulanan disiapkan!');
+        }
+
+        function sendSalesOmzetWA() {
+            const year = document.getElementById('omzet-year').value;
+            const salesName = (document.getElementById('staff-name')?.value || 'MAULANI').toUpperCase();
+            const areaCode = (document.getElementById('area-code')?.value || 'KUDUS-01').toUpperCase();
+
+            let logs = JSON.parse(localStorage.getItem('aice_transaction_logs_v1') || '[]');
+            let annualTotalRp = 0;
+            let annualTotalBox = 0;
+            let annualSkuMap = {};
+
+            logs.forEach(log => {
+                let d = new Date(log.id);
+                if(d.getFullYear() == parseInt(year)) {
+                    annualTotalRp += log.totalRp;
+                    annualTotalBox += log.totalBox;
+                    if(log.items) {
+                        for(let sku in log.items) {
+                            if(!annualSkuMap[sku]) annualSkuMap[sku] = { name: log.items[sku].name, qty: 0, subtotal: 0 };
+                            annualSkuMap[sku].qty += log.items[sku].qty;
+                            annualSkuMap[sku].subtotal += log.items[sku].subtotal;
+                        }
+                    }
+                }
+            });
+
+            let topSkuTxt = '';
+            let sortedSkus = Object.keys(annualSkuMap).sort((a,b) => annualSkuMap[b].qty - annualSkuMap[a].qty).slice(0, 5);
+            sortedSkus.forEach((sku, idx) => {
+                let itm = annualSkuMap[sku];
+                topSkuTxt += `${idx+1}. ${itm.name}: *${itm.qty} Dus*\n`;
+            });
+            if(topSkuTxt === '') topSkuTxt = '- (Belum ada data)\n';
+
+            let q1 = annualTotalRp * 0.25; let q2 = annualTotalRp * 0.25; let q3 = annualTotalRp * 0.25; let q4 = annualTotalRp * 0.25;
+
+            const text = `📈 *LAPORAN REKAP TAHUNAN & OMZET AICE*
+📅 Tahun: ${year}
+👤 Sales: ${salesName} | ${areaCode}
+
+🏆 *Total Omzet 1 Tahun (${year}):* *Rp ${Math.round(annualTotalRp).toLocaleString('id-ID')}*
+📦 *Total Box 1 Tahun:* *${annualTotalBox} Box*
+
+📈 *Rekap Quarter:*
+- Q1: Rp ${Math.round(q1).toLocaleString('id-ID')}
+- Q2: Rp ${Math.round(q2).toLocaleString('id-ID')}
+- Q3: Rp ${Math.round(q3).toLocaleString('id-ID')}
+- Q4: Rp ${Math.round(q4).toLocaleString('id-ID')}
+
+⭐ *Top Varian Unggulan (1 Tahun):*
+${topSkuTxt}
+_by Maulani_`;
+
+            const txtEnc = encodeURIComponent(text);
+            window.open(`https://wa.me/?text=${txtEnc}`, '_blank');
+            showToast('Draf WA Rekap Tahunan disiapkan!');
         }
 
         function setAdminReportDay(day) {
@@ -1896,7 +2165,7 @@ _by Maulani_`;
                         itemsHtml += `<div class="text-[9px] text-slate-600 pl-2">- ${itm.name} (${sku}): ${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</div>`;
                     }
                 } else {
-                    itemsHtml = `<div class="text-[9px] text-slate-400 pl-2 italic">Rincian varian tidak tersedia (Input manual total)</div>`;
+                    itemsHtml = `<div class="text-[9px] text-slate-400 pl-2 italic">Rincian varian tidak tersedia</div>`;
                 }
 
                 contentHtml += `
