@@ -546,7 +546,11 @@
             e.preventDefault();
             const val = document.getElementById('passwordInput').value;
             if(val === PASSWORD_RAHASIA) {
-                sessionStorage.setItem('aice_auth', 'authenticated');
+                try {
+                    localStorage.setItem('aice_auth', 'authenticated');
+                } catch(err) {
+                    sessionStorage.setItem('aice_auth', 'authenticated');
+                }
                 checkAuth();
             } else {
                 showToast('Password salah! Silakan hubungi admin.', 'error');
@@ -556,21 +560,34 @@
         }
 
         function logoutApp() {
-            sessionStorage.removeItem('aice_auth');
+            try {
+                localStorage.removeItem('aice_auth');
+                sessionStorage.removeItem('aice_auth');
+            } catch(e) {}
             checkAuth();
         }
 
         function checkAuth() {
-            if(sessionStorage.getItem('aice_auth') === 'authenticated') {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-menu-screen').classList.remove('hidden');
-                document.getElementById('screen-operasional').classList.add('hidden');
-                document.getElementById('screen-laporan').classList.add('hidden');
+            let isAuth = false;
+            try {
+                isAuth = (localStorage.getItem('aice_auth') === 'authenticated' || sessionStorage.getItem('aice_auth') === 'authenticated');
+            } catch(e) {
+                isAuth = false;
+            }
+
+            const loginScreen = document.getElementById('login-screen');
+            const mainMenu = document.getElementById('main-menu-screen');
+            const opScreen = document.getElementById('screen-operasional');
+            const repScreen = document.getElementById('screen-laporan');
+
+            if(isAuth) {
+                if(loginScreen) loginScreen.classList.add('hidden');
+                if(mainMenu) mainMenu.classList.remove('hidden');
             } else {
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('main-menu-screen').classList.add('hidden');
-                document.getElementById('screen-operasional').classList.add('hidden');
-                document.getElementById('screen-laporan').classList.add('hidden');
+                if(loginScreen) loginScreen.classList.remove('hidden');
+                if(mainMenu) mainMenu.classList.add('hidden');
+                if(opScreen) opScreen.classList.add('hidden');
+                if(repScreen) repScreen.classList.add('hidden');
             }
         }
 
@@ -1379,7 +1396,6 @@
             });
             if(tDus===0) orderText = '- (Tidak ada order es krim)\n';
 
-            // Hitung akumulasi total bulan ini dengan benar tanpa double count
             const storeCode = document.getElementById('store-code')?.value.toUpperCase();
             const weekNum = parseInt(document.getElementById('week-number')?.value) || 1;
             let cumulativeDus = 0;
@@ -1425,7 +1441,6 @@ _by Maulani_`;
             showToast('Menyiapkan laporan & foto tanpa grid...', 'info');
             const textWa = document.getElementById('wa-text').value;
             
-            // Rekam order ke rekap manual & transaksi log
             recordCurrentOrderToManualWeeks();
 
             let filesArray = [];
@@ -1480,10 +1495,14 @@ _by Maulani_`;
             if(!storeCode) return;
 
             let tDus = 0; let tHarga = 0;
+            let currentItems = {};
             products.forEach(p => { 
                 if(orderQty[p.sku]) {
-                    tDus += orderQty[p.sku];
-                    tHarga += orderQty[p.sku] * p.price;
+                    let q = orderQty[p.sku];
+                    let sub = q * p.price;
+                    tDus += q;
+                    tHarga += sub;
+                    currentItems[p.sku] = { name: p.name, qty: q, subtotal: sub };
                 }
             });
             if(tDus === 0) return;
@@ -1491,8 +1510,16 @@ _by Maulani_`;
             normalizeStoreWeekData(storeCode);
             manualStoreWeeks[storeCode][weekNum].dus = (manualStoreWeeks[storeCode][weekNum].dus || 0) + tDus;
             manualStoreWeeks[storeCode][weekNum].rp = (manualStoreWeeks[storeCode][weekNum].rp || 0) + tHarga;
+            
+            if(!manualStoreWeeks[storeCode][weekNum].items) manualStoreWeeks[storeCode][weekNum].items = {};
+            for(let sku in currentItems) {
+                if(!manualStoreWeeks[storeCode][weekNum].items[sku]) {
+                    manualStoreWeeks[storeCode][weekNum].items[sku] = { name: currentItems[sku].name, qty: 0, subtotal: 0 };
+                }
+                manualStoreWeeks[storeCode][weekNum].items[sku].qty += currentItems[sku].qty;
+                manualStoreWeeks[storeCode][weekNum].items[sku].subtotal += currentItems[sku].subtotal;
+            }
 
-            // Log transaksi harian untuk laporan admin berdasarkan kunjungan aktual
             let cust = customers.find(c => c.code === storeCode);
             let scheduledArea = cust ? cust.area : '-';
 
@@ -1505,7 +1532,8 @@ _by Maulani_`;
                 storeName: storeName,
                 totalBox: tDus,
                 totalRp: tHarga,
-                weekNum: weekNum
+                weekNum: weekNum,
+                items: currentItems
             });
             localStorage.setItem('aice_transaction_logs_v1', JSON.stringify(logs));
 
@@ -1531,7 +1559,6 @@ _by Maulani_`;
             showToast('Laporan terkirim & terekam ke menu laporan!');
         }
 
-        // ==================== LOGIC MENU LAPORAN REKAPAN ====================
         function initReportScreen() {
             renderReportDayButtons();
             renderReportStoreData();
@@ -1621,13 +1648,26 @@ _by Maulani_`;
                     monthlyRp += (wData[w]?.rp || 0);
                 }
 
+                let hasVariantDetails = false;
+                let variantSummaryHtml = '';
+                for(let w=1; w<=5; w++) {
+                    if(wData[w]?.items && Object.keys(wData[w].items).length > 0) {
+                        hasVariantDetails = true;
+                        variantSummaryHtml += `<div class="text-[10px] font-semibold text-blue-700 mt-1">Minggu ${w}:</div>`;
+                        for(let sku in wData[w].items) {
+                            let itm = wData[w].items[sku];
+                            variantSummaryHtml += `<div class="text-[9px] text-slate-600 pl-2">- ${itm.name} (${sku}): ${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</div>`;
+                        }
+                    }
+                }
+
                 html += `
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
                     <div class="flex justify-between items-start border-b pb-2">
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-1.5 py-0.5 rounded">${cust.area}</span>
-                                <span class="font-bold text-slate-800 text-xs">${cust.code} - ${cust.name}</span>
+                                <span class="font-bold text-slate-800 text-xs cursor-pointer hover:text-blue-600" onclick="toggleStoreDetail('${cust.code}')">${cust.code} - ${cust.name} 🔍</span>
                             </div>
                             <div class="text-[10px] text-slate-500 mt-0.5">Freezer: ${cust.freezer} | Desa: ${cust.village} | Periode: ${month} ${year}</div>
                         </div>
@@ -1642,7 +1682,6 @@ _by Maulani_`;
                         </div>
                     </div>
 
-                    <!-- Input Manual Minggu 1 - 5 -->
                     <div>
                         <span class="text-[10px] font-bold text-slate-600 block mb-1">Input / Edit Order per Minggu (Dus & Rp):</span>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">
@@ -1655,6 +1694,14 @@ _by Maulani_`;
                             `).join('')}
                         </div>
                     </div>
+
+                    <div id="store-detail-${cust.code}" class="hidden bg-slate-50 border p-2.5 rounded-lg space-y-1 mt-2">
+                        <div class="text-[11px] font-bold text-slate-800 border-b pb-1 flex justify-between">
+                            <span>Rincian Varian per Minggu (Minggu 1 - 5):</span>
+                            <span class="text-[9px] text-slate-500 italic">*Dari order otomatis / manual</span>
+                        </div>
+                        ${hasVariantDetails ? variantSummaryHtml : '<div class="text-[10px] text-slate-400 italic py-1">Belum ada rincian varian terperinci (atau diinput sebagai rekap total manual).</div>'}
+                    </div>
                 </div>`;
             });
 
@@ -1662,16 +1709,21 @@ _by Maulani_`;
             lucide.createIcons();
         }
 
+        function toggleStoreDetail(code) {
+            const el = document.getElementById(`store-detail-${code}`);
+            if(el) el.classList.toggle('hidden');
+        }
+
         function sendStoreReportWA(code, name, area, period) {
             normalizeStoreWeekData(code);
             let wData = manualStoreWeeks[code];
+            let weeklyText = '';
             let monthlyDus = 0;
             let monthlyRp = 0;
-            let weeklyText = '';
 
             for(let w=1; w<=5; w++) {
-                let d = wData[w]?.dus || 0;
-                let r = wData[w]?.rp || 0;
+                let d = wData[w].dus || 0;
+                let r = wData[w].rp || 0;
                 monthlyDus += d;
                 monthlyRp += r;
                 weeklyText += `- Minggu ${w}: ${d} Dus (Rp ${Math.round(r).toLocaleString('id-ID')})\n`;
@@ -1700,12 +1752,10 @@ _by Maulani_`;
             const year = document.getElementById('omzet-year').value;
             document.getElementById('txt-current-year').innerText = year;
 
-            // Hitung total gabungan seluruh toko
             let totalW = { 1:{dus:0,rp:0}, 2:{dus:0,rp:0}, 3:{dus:0,rp:0}, 4:{dus:0,rp:0}, 5:{dus:0,rp:0} };
             let dailyBox = { 'SENIN':0, 'SELASA':0, 'RABU':0, 'KAMIS':0, 'JUMAT':0, 'SABTU':0 };
             let annualRp = 0;
 
-            // Agregasi dari manualStoreWeeks
             customers.forEach(c => {
                 if(manualStoreWeeks[c.code]) {
                     for(let w=1; w<=5; w++) {
@@ -1722,7 +1772,6 @@ _by Maulani_`;
                 }
             });
 
-            // Render box mingguan gabungan
             let boxGridHtml = '';
             for(let w=1; w<=5; w++) {
                 boxGridHtml += `
@@ -1733,7 +1782,6 @@ _by Maulani_`;
             }
             document.getElementById('sales-weekly-box-grid').innerHTML = boxGridHtml;
 
-            // Render omzet harian (Senin - Sabtu) dalam bentuk box
             let dailyGridHtml = '';
             ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'].forEach(day => {
                 let b = dailyBox[day] || 0;
@@ -1745,7 +1793,6 @@ _by Maulani_`;
             });
             document.getElementById('sales-daily-omzet-grid').innerHTML = dailyGridHtml;
 
-            // Quarter & Annual calculation (Asumsi pembagian merata atau q4 dominan)
             let q1 = (totalW[1].rp + totalW[2].rp) * 0.5;
             let q2 = (totalW[2].rp + totalW[3].rp) * 0.5;
             let q3 = (totalW[3].rp + totalW[4].rp) * 0.5;
@@ -1816,6 +1863,11 @@ _by Maulani_`;
             showToast('Draf WA Omzet Sales disiapkan!');
         }
 
+        function setAdminReportDay(day) {
+            adminReportDay = day;
+            renderAdminDailyReport();
+        }
+
         function renderAdminDailyReport() {
             let dayBtnsHtml = '';
             ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'].forEach(day => {
@@ -1833,34 +1885,50 @@ _by Maulani_`;
             let grandTotalRp = 0;
             let no = 1;
 
-            targetLogs.forEach((log) => {
+            targetLogs.forEach((log, index) => {
                 grandTotalBox += log.totalBox;
                 grandTotalRp += log.totalRp;
 
+                let itemsHtml = '';
+                if(log.items && Object.keys(log.items).length > 0) {
+                    for(let sku in log.items) {
+                        let itm = log.items[sku];
+                        itemsHtml += `<div class="text-[9px] text-slate-600 pl-2">- ${itm.name} (${sku}): ${itm.qty} Dus (Rp ${Math.round(itm.subtotal).toLocaleString('id-ID')})</div>`;
+                    }
+                } else {
+                    itemsHtml = `<div class="text-[9px] text-slate-400 pl-2 italic">Rincian varian tidak tersedia (Input manual total)</div>`;
+                }
+
                 contentHtml += `
-                <div class="flex justify-between items-center p-2.5 bg-slate-50 border rounded-xl text-xs">
-                    <div>
-                        <div class="font-bold text-slate-800">${no++}. ${log.storeCode} - ${log.storeName}</div>
-                        <div class="text-[10px] text-slate-500">Jadwal Asli: ${log.scheduledArea || '-'} | Dibuat Hari: ${log.auditDay}</div>
+                <div class="p-2.5 bg-slate-50 border rounded-xl text-xs space-y-1">
+                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleAdminLogDetail(${index})">
+                        <div>
+                            <div class="font-bold text-slate-800">${no++}. ${log.storeCode} - ${log.storeName} 🔍</div>
+                            <div class="text-[10px] text-slate-500">Jadwal Asli: ${log.scheduledArea || '-'} | Minggu Ke-${log.weekNum || 1}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-rose-600 block">${log.totalBox} Box</span>
+                            <span class="text-[10px] text-slate-500">Rp ${Math.round(log.totalRp).toLocaleString('id-ID')}</span>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <span class="font-bold text-rose-600 block">${log.totalBox} Box</span>
-                        <span class="text-[10px] text-slate-500">Rp ${Math.round(log.totalRp).toLocaleString('id-ID')}</span>
+                    <div id="admin-log-detail-${index}" class="hidden pt-1 border-t mt-1 space-y-0.5">
+                        <div class="text-[10px] font-bold text-indigo-700">Rincian Varian Tanggal Ini:</div>
+                        ${itemsHtml}
                     </div>
                 </div>`;
             });
 
             if(contentHtml === '') {
-                contentHtml = '<div class="text-center text-xs text-slate-400 py-6">Belum ada transaksi tercatat pada hari ' + adminReportDay + '. Gunakan menu operasional & kirim WA untuk mencatat kunjungan aktual.</div>';
+                contentHtml = '<div class="text-center text-xs text-slate-400 py-6">Belum ada transaksi tercatat pada hari ' + adminReportDay + '.</div>';
             }
 
             document.getElementById('admin-daily-report-content').innerHTML = contentHtml;
             document.getElementById('admin-grand-total').innerText = `${grandTotalBox} Box (Rp ${Math.round(grandTotalRp).toLocaleString('id-ID')})`;
         }
 
-        function setAdminReportDay(day) {
-            adminReportDay = day;
-            renderAdminDailyReport();
+        function toggleAdminLogDetail(idx) {
+            const el = document.getElementById(`admin-log-detail-${idx}`);
+            if(el) el.classList.toggle('hidden');
         }
 
         function sendAdminDailyReportWA() {
@@ -1875,6 +1943,12 @@ _by Maulani_`;
                 grandTotalBox += log.totalBox;
                 grandTotalRp += log.totalRp;
                 rincianTxt += `${no++}. ${log.storeName} (${log.storeCode}) - *${log.totalBox} Box* (Rp ${Math.round(log.totalRp).toLocaleString('id-ID')})\n`;
+                if(log.items && Object.keys(log.items).length > 0) {
+                    for(let sku in log.items) {
+                        let itm = log.items[sku];
+                        rincianTxt += `   ▫️ ${itm.name}: ${itm.qty} Dus\n`;
+                    }
+                }
             });
 
             if(rincianTxt === '') {
@@ -1888,7 +1962,7 @@ _by Maulani_`;
 📅 Hari: ${adminReportDay}
 👤 Sales: ${salesName} | ${areaCode}
 
-📌 *Rincian Toko Order (${adminReportDay}):*
+📌 *Rincian Toko & Varian (${adminReportDay}):*
 ${rincianTxt}
 📦 *TOTAL KESELURUHAN HARI ${adminReportDay}:*
 - Total Box: *${grandTotalBox} Box*
@@ -1901,36 +1975,11 @@ _by Maulani_`;
         }
 
         function loadDemoData() {
-            openConfirmModal('Muat Data Contoh', 'Apakah Anda ingin memuat data contoh order untuk menguji rekapitulasi?', () => {
-                saveState();
-                let demoLogs = [];
-                customers.forEach((c, idx) => {
-                    let w1 = (idx % 3 === 0) ? 5 : (idx % 2 === 0 ? 3 : 0);
-                    let w2 = (idx % 4 === 0) ? 4 : 2;
-                    let w3 = (idx % 5 === 0) ? 6 : 0;
-                    let w4 = (idx % 2 === 0) ? 3 : 1;
-                    let w5 = 0;
-                    if(w1 > 0 || w2 > 0 || w3 > 0 || w4 > 0) {
-                        manualStoreWeeks[c.code] = { 
-                            1: { dus: w1, rp: w1 * 95000 }, 
-                            2: { dus: w2, rp: w2 * 95000 }, 
-                            3: { dus: w3, rp: w3 * 95000 }, 
-                            4: { dus: w4, rp: w4 * 95000 }, 
-                            5: { dus: w5, rp: w5 * 95000 } 
-                        };
-                        demoLogs.push({
-                            id: Date.now() + idx,
-                            auditDay: c.area,
-                            scheduledArea: c.area,
-                            storeCode: c.code,
-                            storeName: c.name,
-                            totalBox: w1 + w2,
-                            totalRp: (w1 + w2) * 95000,
-                            weekNum: 1
-                        });
-                    }
-                });
-                localStorage.setItem('aice_transaction_logs_v1', JSON.stringify(demoLogs));
+            openConfirmModal('Muat Data Contoh', 'Apakah Anda ingin memuat data contoh transaksi untuk menguji laporan rekapan?', () => {
+                manualStoreWeeks = {
+                    'D0712': { 1: {dus: 5, rp: 475000}, 2: {dus: 8, rp: 760000}, 3: {dus: 0, rp: 0}, 4: {dus: 10, rp: 950000}, 5: {dus: 0, rp: 0} },
+                    'D0755': { 1: {dus: 12, rp: 1140000}, 2: {dus: 15, rp: 1425000}, 3: {dus: 10, rp: 950000}, 4: {dus: 20, rp: 1900000}, 5: {dus: 0, rp: 0} }
+                };
                 saveToLocalStorage();
                 initReportScreen();
                 showToast('Data contoh berhasil dimuat!');
@@ -1938,23 +1987,25 @@ _by Maulani_`;
         }
 
         function clearHistory() {
-            openConfirmModal('Reset Data', 'Apakah Anda yakin ingin mereset seluruh data rekap dan log transaksi?', () => {
+            openConfirmModal('Reset Rekapan', 'Apakah Anda yakin ingin mereset seluruh data rekapan toko dan omzet sales?', () => {
                 manualStoreWeeks = {};
                 localStorage.removeItem('aice_transaction_logs_v1');
                 saveToLocalStorage();
-                renderReportStoreData();
-                renderOmzetSalesData();
-                renderAdminDailyReport();
-                showToast('Data rekap berhasil direset.');
+                initReportScreen();
+                showToast('Data rekapan berhasil direset.');
             });
         }
 
-        function showToast(msg, type='info') {
-            const t = document.createElement('div');
-            t.className = `px-3 py-2 rounded shadow text-white text-[10px] ${type==='error'?'bg-rose-600':'bg-slate-800'}`;
-            t.innerText = msg;
-            document.getElementById('toast').appendChild(t);
-            setTimeout(() => t.remove(), 2500);
+        function showToast(msg, type='success') {
+            const container = document.getElementById('toast');
+            const toast = document.createElement('div');
+            toast.className = `p-3 rounded-xl shadow-lg text-xs font-bold text-white transition transform translate-y-2 ${type==='error'?'bg-rose-600':'bg-slate-900'}`;
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
     </script>
 </body>
